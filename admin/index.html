@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | Sri Murugan Daily Fresh Tiruppur</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+  <div class="admin-app">
+    <!-- =========================================================
+         LEFT SIDEBAR NAVIGATION
+         ========================================================= -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">🧺</div>
+        <div>
+          <div class="sidebar-brand-title">Sri Murugan</div>
+          <div class="sidebar-brand-sub">TIRUPPUR ADMIN</div>
+        </div>
+      </div>
+
+      <ul class="sidebar-nav">
+        <li class="nav-section-title">Store Management</li>
+        <li>
+          <button class="nav-item-btn active" data-view="overview">
+            <span class="nav-icon">📊</span>
+            <span>Dashboard Overview</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-view="products">
+            <span class="nav-icon">🛒</span>
+            <span>Products</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-view="bulk-prices">
+            <span class="nav-icon">🏷️</span>
+            <span>Bulk Price Editor</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-view="categories">
+            <span class="nav-icon">📦</span>
+            <span>Categories</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-view="offers">
+            <span class="nav-icon">🎁</span>
+            <span>Offers &amp; Promos</span>
+          </button>
+        </li>
+
+        <li class="nav-section-title">Settings &amp; Content</li>
+        <li>
+          <button class="nav-item-btn" data-view="shop-info">
+            <span class="nav-icon">🏪</span>
+            <span>Shop Information</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-view="homepage">
+            <span class="nav-icon">🌐</span>
+            <span>Homepage Editor</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-view="orders">
+            <span class="nav-icon">📋</span>
+            <span>Orders &amp; WhatsApp</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="admin-user-pill">
+          <div class="admin-avatar" id="adminAvatarInitial">A</div>
+          <div class="admin-user-info">
+            <h6 id="adminUserNameDisplay">Owner</h6>
+            <span id="adminUserEmailDisplay">admin@srimurugan.com</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- =========================================================
+         MAIN APPLICATION AREA
+         ========================================================= -->
+    <main class="admin-main">
+      <!-- Top Navigation Bar -->
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle Navigation">☰</button>
+          <h2 class="page-title" id="currentPageTitle">Dashboard Overview</h2>
+        </div>
+        <div class="topbar-right">
+          <a href="/" target="_blank" class="btn-view-site">
+            <span>🌐 View Public Website</span> ↗
+          </a>
+          <button class="btn-logout" onclick="logout()" title="Logout from dashboard">
+            <span>Logout</span> 🚪
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Views Container -->
+      <div class="content-area">
+
+        <!-- =======================================================
+             VIEW 1: DASHBOARD OVERVIEW
+             ======================================================= -->
+        <section class="view-section is-active" id="view-overview">
+          <!-- Stat Cards -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">🛒</div>
+              <div class="stat-info">
+                <h3 id="statTotalProducts">0</h3>
+                <p>Total Products</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">✅</div>
+              <div class="stat-info">
+                <h3 id="statActiveProducts">0</h3>
+                <p>Active In-Stock</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon danger">⚠️</div>
+              <div class="stat-info">
+                <h3 id="statOutOfStock">0</h3>
+                <p>Out of Stock</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon info">📦</div>
+              <div class="stat-info">
+                <h3 id="statCategories">0</h3>
+                <p>Grocery Categories</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon warning">🎁</div>
+              <div class="stat-info">
+                <h3 id="statActiveOffers">0</h3>
+                <p>Active Offers</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📋</div>
+              <div class="stat-info">
+                <h3 id="statTotalOrders">0</h3>
+                <p>Customer Orders</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions Bar -->
+          <div class="quick-actions-bar">
+            <span class="quick-actions-title">⚡ Quick Management Actions:</span>
+            <div class="action-buttons-group">
+              <button class="btn btn-primary" onclick="openAddProductModal()">
+                <span>+ Add New Product</span>
+              </button>
+              <button class="btn btn-secondary" onclick="switchView('bulk-prices')">
+                <span>🏷️ Update Prices</span>
+              </button>
+              <button class="btn btn-secondary" onclick="switchView('categories')">
+                <span>📦 Manage Categories</span>
+              </button>
+              <button class="btn btn-secondary" onclick="switchView('offers')">
+                <span>🎁 Create Offer</span>
+              </button>
+              <button class="btn btn-secondary" onclick="switchView('shop-info')">
+                <span>🏪 Shop Details</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Recently Updated Products Card -->
+          <div class="card-box">
+            <div class="card-box-header">
+              <h3>Recently Updated Products</h3>
+              <button class="btn btn-sm btn-secondary" onclick="switchView('products')">View All Products ➔</button>
+            </div>
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Current Price</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="recentProductsTableBody">
+                  <tr><td colspan="5" style="text-align:center; padding: 20px;">Loading overview...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =======================================================
+             VIEW 2: PRODUCT MANAGEMENT
+             ======================================================= -->
+        <section class="view-section" id="view-products">
+          <div class="card-box">
+            <div class="card-box-header">
+              <h3>Product Catalogue</h3>
+              <button class="btn btn-primary" onclick="openAddProductModal()">
+                <span>+ Add Product</span>
+              </button>
+            </div>
+
+            <!-- Filter Strip -->
+            <div style="padding: 16px 24px; background: #f8fafc; border-bottom: 1px solid var(--admin-border); display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+              <div style="flex: 1; min-width: 220px;">
+                <input
+                  type="text"
+                  id="prodSearchInput"
+                  class="form-control"
+                  placeholder="🔍 Search products by name, Tamil name..."
+                  oninput="loadProducts()"
+                />
+              </div>
+              <div style="width: 180px;">
+                <select id="prodCategoryFilter" class="form-control" onchange="loadProducts()">
+                  <option value="">All Categories</option>
+                </select>
+              </div>
+              <div style="width: 150px;">
+                <select id="prodStatusFilter" class="form-control" onchange="loadProducts()">
+                  <option value="">All Statuses</option>
+                  <option value="available">In Stock</option>
+                  <option value="out_of_stock">Out of Stock</option>
+                  <option value="unpublished">Hidden</option>
+                </select>
+              </div>
+              <div style="width: 160px;">
+                <select id="prodSortSelect" class="form-control" onchange="loadProducts()">
+                  <option value="">Sort: Newest</option>
+                  <option value="name_asc">Name: A to Z</option>
+                  <option value="price_asc">Price: Low to High</option>
+                  <option value="price_desc">Price: High to Low</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th style="width: 60px;">Image</th>
+                    <th>Product &amp; Tamil Name</th>
+                    <th>Category</th>
+                    <th>Price &amp; Unit</th>
+                    <th>Stock Status</th>
+                    <th>Visibility</th>
+                    <th style="width: 100px;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                  <tr><td colspan="7" style="text-align:center; padding: 24px;">Loading products...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =======================================================
+             VIEW 3: BULK PRICE UPDATE (Section 4)
+             ======================================================= -->
+        <section class="view-section" id="view-bulk-prices">
+          <div class="card-box">
+            <div class="card-box-header">
+              <div>
+                <h3>Bulk Price Editor</h3>
+                <p style="font-size: 0.82rem; color: #64748b; margin: 4px 0 0;">
+                  Update daily mandi prices across multiple grocery items directly in the table. Click "Publish All Price Updates" to reflect live on the website.
+                </p>
+              </div>
+              <button class="btn btn-primary" onclick="handleSaveBulkPrices()">
+                <span>💾 Publish All Price Updates</span>
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">Image</th>
+                    <th>Product Name</th>
+                    <th>Unit</th>
+                    <th>Current Price</th>
+                    <th>New Regular Price (₹)</th>
+                    <th>New Offer Price (₹)</th>
+                  </tr>
+                </thead>
+                <tbody id="bulkPriceTableBody">
+                  <tr><td colspan="6" style="text-align:center; padding: 24px;">Loading products for bulk editing...</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid var(--admin-border); display: flex; justify-content: flex-end;">
+              <button class="btn btn-primary" onclick="handleSaveBulkPrices()">
+                <span>💾 Publish All Price Updates</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- =======================================================
+             VIEW 4: CATEGORY MANAGEMENT (Section 6)
+             ======================================================= -->
+        <section class="view-section" id="view-categories">
+          <div class="card-box">
+            <div class="card-box-header">
+              <div>
+                <h3>Grocery Categories</h3>
+                <p style="font-size: 0.82rem; color: #64748b; margin: 4px 0 0;">
+                  Manage product categories displayed on the public landing page.
+                </p>
+              </div>
+              <button class="btn btn-primary" onclick="openAddCategoryModal()">
+                <span>+ Add Category</span>
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th style="width: 60px;">Icon</th>
+                    <th>Category Name &amp; Tamil</th>
+                    <th>Assigned Products</th>
+                    <th>Display Order</th>
+                    <th>Status</th>
+                    <th style="width: 100px;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="categoriesTableBody">
+                  <tr><td colspan="6" style="text-align:center; padding: 24px;">Loading categories...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =======================================================
+             VIEW 5: OFFERS & PROMOTIONS (Section 7)
+             ======================================================= -->
+        <section class="view-section" id="view-offers">
+          <div class="card-box">
+            <div class="card-box-header">
+              <div>
+                <h3>Promotional Offers &amp; Banners</h3>
+                <p style="font-size: 0.82rem; color: #64748b; margin: 4px 0 0;">
+                  Create special festive discounts, festival deals, and seasonal coupon promotions.
+                </p>
+              </div>
+              <button class="btn btn-primary" onclick="openAddOfferModal()">
+                <span>+ Create New Offer</span>
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Offer Title</th>
+                    <th>Discount Badge</th>
+                    <th>Promo Code</th>
+                    <th>Validity Period</th>
+                    <th>Status</th>
+                    <th style="width: 100px;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="offersTableBody">
+                  <tr><td colspan="6" style="text-align:center; padding: 24px;">Loading offers...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =======================================================
+             VIEW 6: SHOP INFORMATION SETTINGS (Section 8)
+             ======================================================= -->
+        <section class="view-section" id="view-shop-info">
+          <div class="card-box" style="max-width: 800px;">
+            <div class="card-box-header">
+              <div>
+                <h3>Shop Information &amp; Contact Details</h3>
+                <p style="font-size: 0.82rem; color: #64748b; margin: 4px 0 0;">
+                  Changes made here update the header, footer, WhatsApp ordering links, and Google Map links on the public landing page.
+                </p>
+              </div>
+            </div>
+
+            <form style="padding: 24px;" onsubmit="handleSaveShopSettings(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Shop Name</label>
+                  <input type="text" id="shopNameInput" class="form-control" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Tagline</label>
+                  <input type="text" id="shopTaglineInput" class="form-control" />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Phone Number Display</label>
+                  <input type="text" id="shopPhoneDisplayInput" class="form-control" placeholder="+91 98765 43210" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">WhatsApp Number (e.g. 919876543210)</label>
+                  <input type="text" id="shopWhatsappInput" class="form-control" placeholder="919876543210" required />
+                  <span style="font-size: 0.74rem; color: #64748b;">Must include country code 91 without spaces or + sign</span>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Address Line 1</label>
+                  <input type="text" id="shopAddress1Input" class="form-control" placeholder="Street / Road" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Address Line 2 / Landmark</label>
+                  <input type="text" id="shopAddress2Input" class="form-control" placeholder="Landmark / Area" />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">City</label>
+                  <input type="text" id="shopCityInput" class="form-control" value="Tiruppur" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Pincode</label>
+                  <input type="text" id="shopPincodeInput" class="form-control" value="641601" required />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Opening &amp; Closing Hours</label>
+                  <input type="text" id="shopTimingsInput" class="form-control" placeholder="Open Every Day: 6:30 AM – 10:00 PM" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Minimum Order Amount (₹)</label>
+                  <input type="number" id="shopMinOrderInput" class="form-control" value="200" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Google Maps Directions Link</label>
+                <input type="url" id="shopGmapsInput" class="form-control" placeholder="https://maps.google.com/..." />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Delivery Areas Description</label>
+                <input type="text" id="shopDeliveryRadiusInput" class="form-control" placeholder="PN Road, Avinashi Road, College Road..." />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Shop Description</label>
+                <textarea id="shopDescriptionInput" class="form-control" rows="3"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
+                <span>Save Shop Settings</span>
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- =======================================================
+             VIEW 7: WEBSITE HOMEPAGE MANAGEMENT (Section 9)
+             ======================================================= -->
+        <section class="view-section" id="view-homepage">
+          <div style="display: grid; grid-template-columns: 1fr; gap: 24px;">
+            <div class="card-box">
+              <div class="card-box-header">
+                <div>
+                  <h3>Homepage Content &amp; Hero Editor</h3>
+                  <p style="font-size: 0.82rem; color: #64748b; margin: 4px 0 0;">
+                    Customize headlines, banner photos, trust badges, and promotional announcements.
+                  </p>
+                </div>
+              </div>
+
+              <form style="padding: 24px;" onsubmit="handleSaveHomepageSettings(event)">
+                <div class="form-group">
+                  <label class="form-label">Hero Headline</label>
+                  <input
+                    type="text"
+                    id="heroHeadlineInput"
+                    class="form-control"
+                    oninput="updateLiveHomepagePreview()"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Hero Subtitle</label>
+                  <textarea
+                    id="heroSubtitleInput"
+                    class="form-control"
+                    rows="3"
+                    oninput="updateLiveHomepagePreview()"
+                    required
+                  ></textarea>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Trust Indicator Text</label>
+                    <input
+                      type="text"
+                      id="trustIndicatorInput"
+                      class="form-control"
+                      placeholder="Serving Your Neighbourhood in Tiruppur"
+                      oninput="updateLiveHomepagePreview()"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Hero Banner Image URL</label>
+                    <input
+                      type="url"
+                      id="heroImageInput"
+                      class="form-control"
+                      oninput="updateLiveHomepagePreview()"
+                    />
+                  </div>
+                </div>
+
+                <!-- Announcement Bar -->
+                <div style="margin-top: 10px; padding: 16px; background: #f8fafc; border: 1px solid var(--admin-border); border-radius: 10px;">
+                  <h4 style="font-size: 0.92rem; font-weight: 700; margin-bottom: 10px;">Top Announcement Bar</h4>
+                  <div class="form-group">
+                    <label class="form-label">Announcement Message</label>
+                    <input type="text" id="announcementTextInput" class="form-control" placeholder="Free delivery in Tiruppur on orders above ₹500!" />
+                  </div>
+                  <label class="form-check">
+                    <input type="checkbox" id="announcementActiveInput" checked />
+                    <span>Show announcement bar on public website</span>
+                  </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top: 20px;">
+                  <span>Publish to Homepage</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- Live Preview Card -->
+            <div class="card-box">
+              <div class="card-box-header">
+                <h3>Live Hero Preview</h3>
+                <span class="status-pill success">Live Preview</span>
+              </div>
+              <div style="padding: 24px; background: linear-gradient(175deg, #f0fdf4 0%, #ffffff 100%); border-radius: 0 0 14px 14px;">
+                <span id="previewHeroTrust" style="display:inline-block; font-size:0.75rem; font-weight:700; color:#065f46; background:#ecfdf5; border:1px solid #a7f3d0; padding:4px 12px; border-radius:9999px; margin-bottom:10px;">
+                  Serving Your Neighbourhood in Tiruppur
+                </span>
+                <h2 id="previewHeroHeading" style="font-family:'Outfit', sans-serif; font-size:1.8rem; font-weight:800; color:#064e3b; margin-bottom:8px;">
+                  Your Neighbourhood Grocery Store in Tiruppur
+                </h2>
+                <p id="previewHeroSubtitle" style="font-size:0.92rem; color:#475569; max-width:600px; margin-bottom:16px;">
+                  Fresh groceries, everyday essentials, and quality products at affordable prices.
+                </p>
+                <img
+                  id="previewHeroImage"
+                  src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80"
+                  alt="Preview"
+                  style="max-height: 200px; width:100%; object-fit:cover; border-radius:10px;"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =======================================================
+             VIEW 8: ORDERS & WHATSAPP (Section 10)
+             ======================================================= -->
+        <section class="view-section" id="view-orders">
+          <div class="card-box">
+            <div class="card-box-header">
+              <div>
+                <h3>Customer Orders &amp; WhatsApp Log</h3>
+                <p style="font-size: 0.82rem; color: #64748b; margin: 4px 0 0;">
+                  View orders received through the website. Click "WhatsApp Customer" to open the chat directly with order details.
+                </p>
+              </div>
+              <button class="btn btn-secondary" onclick="loadOrders()">
+                <span>🔄 Refresh Orders</span>
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Order #</th>
+                    <th>Customer Name &amp; Phone</th>
+                    <th>Items Ordered</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                  <tr><td colspan="7" style="text-align:center; padding: 24px;">Loading orders...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- =========================================================
+       MODAL 1: ADD / EDIT PRODUCT
+       ========================================================= -->
+  <div class="modal-backdrop" id="productModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h4 id="productModalTitle">Add New Product</h4>
+        <button class="modal-close-btn" onclick="closeModal('productModal')">×</button>
+      </div>
+      <form onsubmit="saveProductForm(event)">
+        <div class="modal-body">
+          <input type="hidden" id="modalProductId" />
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Product Name (English) *</label>
+              <input type="text" id="modalProdName" class="form-control" placeholder="e.g. BPT Deluxe Ponni Rice" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Product Name (Tamil)</label>
+              <input type="text" id="modalProdTamilName" class="form-control" placeholder="e.g. பொன்னி புழுங்கல் அரிசி" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select id="modalProdCategory" class="form-control" required></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Unit *</label>
+              <select id="modalProdUnit" class="form-control" required>
+                <option value="1 kg">1 kg</option>
+                <option value="5 kg bag">5 kg bag</option>
+                <option value="10 kg bag">10 kg bag</option>
+                <option value="25 kg bag">25 kg bag</option>
+                <option value="500 grams">500 grams</option>
+                <option value="250 grams">250 grams</option>
+                <option value="1 Litre">1 Litre</option>
+                <option value="500 ml">500 ml</option>
+                <option value="Pack of 6">Pack of 6</option>
+                <option value="1 piece">1 piece</option>
+                <option value="1 bunch">1 bunch</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Regular Price (₹) *</label>
+              <input type="number" step="0.5" id="modalProdPrice" class="form-control" placeholder="360" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Offer / Discount Price (₹)</label>
+              <input type="number" step="0.5" id="modalProdOfferPrice" class="form-control" placeholder="340 (leave blank if none)" />
+            </div>
+          </div>
+
+          <!-- Image Upload / URL -->
+          <div class="form-group">
+            <label class="form-label">Product Image</label>
+            <div class="image-upload-wrapper" onclick="document.getElementById('modalProdFileInput').click()">
+              <div>📁 Click or Drag image to upload (JPG, PNG, WebP &bull; Max 5MB)</div>
+              <input
+                type="file"
+                id="modalProdFileInput"
+                accept="image/jpeg,image/png,image/webp"
+                style="display: none;"
+                onchange="handleFileUpload(this, 'modalProdImage', 'modalProdImagePreview')"
+              />
+              <img id="modalProdImagePreview" class="image-preview-thumb" style="display: none;" />
+            </div>
+            <div style="margin-top: 8px;">
+              <span style="font-size: 0.75rem; color: #64748b;">Or enter direct image URL:</span>
+              <input
+                type="url"
+                id="modalProdImage"
+                class="form-control"
+                placeholder="https://..."
+                onchange="document.getElementById('modalProdImagePreview').src=this.value; document.getElementById('modalProdImagePreview').style.display=this.value?'block':'none';"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Short Description</label>
+            <textarea id="modalProdDescription" class="form-control" rows="2" placeholder="Quality, taste, source or preparation note..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Badge Text (Optional)</label>
+            <input type="text" id="modalProdBadge" class="form-control" placeholder="e.g. Best Seller, Farm Fresh, Organic..." />
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 20px; padding: 12px; background: #f8fafc; border-radius: 8px; border: 1px solid var(--admin-border);">
+            <label class="form-check">
+              <input type="checkbox" id="modalProdAvailable" checked />
+              <span>In Stock (Available)</span>
+            </label>
+            <label class="form-check">
+              <input type="checkbox" id="modalProdPublished" checked />
+              <span>Visible on Public Website</span>
+            </label>
+            <label class="form-check">
+              <input type="checkbox" id="modalProdFeatured" />
+              <span>Featured on Homepage</span>
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('productModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL 2: ADD / EDIT CATEGORY
+       ========================================================= -->
+  <div class="modal-backdrop" id="categoryModal">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-header">
+        <h4 id="categoryModalTitle">Category</h4>
+        <button class="modal-close-btn" onclick="closeModal('categoryModal')">×</button>
+      </div>
+      <form onsubmit="saveCategoryForm(event)">
+        <div class="modal-body">
+          <input type="hidden" id="modalCatId" />
+
+          <div class="form-group">
+            <label class="form-label">Category Name (English) *</label>
+            <input type="text" id="modalCatName" class="form-control" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Category Name (Tamil)</label>
+            <input type="text" id="modalCatTamil" class="form-control" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Icon / Emoji</label>
+              <input type="text" id="modalCatIcon" class="form-control" value="📦" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Display Order</label>
+              <input type="number" id="modalCatOrder" class="form-control" value="1" />
+            </div>
+          </div>
+
+          <label class="form-check">
+            <input type="checkbox" id="modalCatActive" checked />
+            <span>Active on Website</span>
+          </label>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('categoryModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Category</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL 3: ADD / EDIT OFFER
+       ========================================================= -->
+  <div class="modal-backdrop" id="offerModal">
+    <div class="modal-box" style="max-width: 540px;">
+      <div class="modal-header">
+        <h4 id="offerModalTitle">Promotional Offer</h4>
+        <button class="modal-close-btn" onclick="closeModal('offerModal')">×</button>
+      </div>
+      <form onsubmit="saveOfferForm(event)">
+        <div class="modal-body">
+          <input type="hidden" id="modalOfferId" />
+
+          <div class="form-group">
+            <label class="form-label">Offer Title *</label>
+            <input type="text" id="modalOfferTitle" class="form-control" placeholder="e.g. Weekend Rice &amp; Oil Festival" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Discount Tag</label>
+              <input type="text" id="modalOfferTag" class="form-control" placeholder="e.g. FLAT 10% OFF" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Coupon Code (Optional)</label>
+              <input type="text" id="modalOfferCode" class="form-control" placeholder="e.g. TIRUPPUR10" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Offer Description</label>
+            <textarea id="modalOfferDesc" class="form-control" rows="2"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Start Date</label>
+              <input type="date" id="modalOfferStart" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">End Date</label>
+              <input type="date" id="modalOfferEnd" class="form-control" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Banner Image URL</label>
+            <input type="url" id="modalOfferBanner" class="form-control" placeholder="https://..." />
+          </div>
+
+          <label class="form-check">
+            <input type="checkbox" id="modalOfferActive" checked />
+            <span>Activate Offer on Public Website</span>
+          </label>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('offerModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Publish Offer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL 4: GENERAL CONFIRMATION DIALOG
+       ========================================================= -->
+  <div class="modal-backdrop" id="confirmModal">
+    <div class="modal-box" style="max-width: 440px;">
+      <div class="modal-header">
+        <h4 id="confirmModalTitle">Please Confirm</h4>
+        <button class="modal-close-btn" onclick="closeModal('confirmModal')">×</button>
+      </div>
+      <div class="modal-body" id="confirmModalMessage" style="color: #334155; line-height: 1.5;"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('confirmModal')">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmModalConfirmBtn">Confirm &amp; Proceed</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Controller Script -->
+  <script src="admin.js"></script>
+</body>
+</html>

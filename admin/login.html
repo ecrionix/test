@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login | Sri Murugan Daily Fresh Tiruppur</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 20%, #ecfdf5 0%, #f1f5f9 60%, #e2e8f0 100%);
+      padding: 20px;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 440px;
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.12), 0 0 1px 1px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .login-header {
+      background: #064e3b;
+      color: #ffffff;
+      padding: 30px 28px;
+      text-align: center;
+    }
+    .login-header-icon {
+      width: 52px;
+      height: 52px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .login-body {
+      padding: 28px;
+    }
+    .tab-switch {
+      display: flex;
+      border-bottom: 2px solid #e2e8f0;
+      margin-bottom: 24px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #64748b;
+      text-align: center;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      color: #059669;
+      border-bottom-color: #059669;
+    }
+    .credentials-hint {
+      margin-top: 18px;
+      padding: 12px 14px;
+      background: #f0fdf4;
+      border: 1px dashed #86efac;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: #166534;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <div class="login-header">
+      <div class="login-header-icon">🛒</div>
+      <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.45rem; font-weight: 800; margin-bottom: 4px;">
+        Store Manager Portal
+      </h1>
+      <p style="font-size: 0.84rem; color: #a7f3d0; margin: 0;">
+        Sri Murugan Daily Fresh • Tiruppur
+      </p>
+    </div>
+
+    <div class="login-body">
+      <!-- Tabs: Sign In / Forgot Password -->
+      <div class="tab-switch">
+        <div class="tab-btn active" id="tabSignInBtn" onclick="switchLoginTab('signin')">Sign In</div>
+        <div class="tab-btn" id="tabForgotBtn" onclick="switchLoginTab('forgot')">Reset Password</div>
+      </div>
+
+      <!-- Alert Box -->
+      <div id="loginAlert" class="alert-box" style="display: none;"></div>
+
+      <!-- Form 1: Sign In -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label" for="loginUsername">Email or Username</label>
+          <input
+            type="text"
+            id="loginUsername"
+            class="form-control"
+            placeholder="admin@srimurugan.com"
+            value="admin@srimurugan.com"
+            required
+            autocomplete="username"
+          />
+        </div>
+
+        <div class="form-group" style="position: relative;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" for="loginPassword" style="margin-bottom: 0;">Password</label>
+            <span
+              onclick="togglePasswordVisibility('loginPassword', this)"
+              style="font-size: 0.78rem; color: #059669; cursor: pointer; font-weight: 600;"
+            >Show</span>
+          </div>
+          <input
+            type="password"
+            id="loginPassword"
+            class="form-control"
+            placeholder="••••••••••••"
+            value="Tiruppur@123"
+            required
+            autocomplete="current-password"
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="width: 100%; margin-top: 10px;">
+          <span>Log In to Dashboard</span> ➔
+        </button>
+      </form>
+
+      <!-- Form 2: Password Reset -->
+      <form id="forgotForm" onsubmit="handleForgotPassword(event)" style="display: none;">
+        <div class="form-group">
+          <label class="form-label" for="forgotEmail">Admin Registered Email</label>
+          <input
+            type="email"
+            id="forgotEmail"
+            class="form-control"
+            placeholder="admin@srimurugan.com"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="forgotSubmitBtn" style="width: 100%; margin-top: 8px;">
+          <span>Generate Reset Token</span>
+        </button>
+
+        <div id="resetFieldsContainer" style="display: none; margin-top: 18px; padding-top: 18px; border-top: 1px dashed #cbd5e1;">
+          <div class="form-group">
+            <label class="form-label" for="resetTokenInput">Reset Token</label>
+            <input type="text" id="resetTokenInput" class="form-control" placeholder="Paste generated token" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="newPasswordInput">New Password (min 6 characters)</label>
+            <input type="password" id="newPasswordInput" class="form-control" placeholder="Enter new strong password" />
+          </div>
+          <button type="button" class="btn btn-primary" onclick="handlePerformReset()" style="width: 100%;">
+            Confirm &amp; Update Password
+          </button>
+        </div>
+      </form>
+
+      <!-- Initial credentials tip for the store owner -->
+      <div class="credentials-hint">
+        <strong>🔐 Default Credentials:</strong><br />
+        Username: <code>admin@srimurugan.com</code><br />
+        Password: <code>Tiruppur@123</code>
+      </div>
+
+      <div style="text-align: center; margin-top: 22px;">
+        <a href="/" style="font-size: 0.85rem; color: #475569; text-decoration: none; font-weight: 600;">
+          ← Return to Public Grocery Website
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // If already logged in, redirect to dashboard directly
+    const existingToken = localStorage.getItem('grocery_admin_token');
+    if (existingToken) {
+      fetch('/api/auth/me', {
+        headers: { 'Authorization': `Bearer ${existingToken}` }
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.success) {
+          window.location.href = '/admin/';
+        }
+      })
+      .catch(() => {
+        localStorage.removeItem('grocery_admin_token');
+      });
+    }
+
+    function showAlert(msg, isError = true) {
+      const box = document.getElementById('loginAlert');
+      box.style.display = 'block';
+      box.className = 'alert-box ' + (isError ? 'alert-danger' : 'alert-success');
+      box.innerHTML = msg;
+    }
+
+    function switchLoginTab(tab) {
+      const tabSignIn = document.getElementById('tabSignInBtn');
+      const tabForgot = document.getElementById('tabForgotBtn');
+      const formLogin = document.getElementById('loginForm');
+      const formForgot = document.getElementById('forgotForm');
+      const alertBox = document.getElementById('loginAlert');
+      alertBox.style.display = 'none';
+
+      if (tab === 'signin') {
+        tabSignIn.classList.add('active');
+        tabForgot.classList.remove('active');
+        formLogin.style.display = 'block';
+        formForgot.style.display = 'none';
+      } else {
+        tabForgot.classList.add('active');
+        tabSignIn.classList.remove('active');
+        formForgot.style.display = 'block';
+        formLogin.style.display = 'none';
+      }
+    }
+
+    function togglePasswordVisibility(inputId, triggerEl) {
+      const inp = document.getElementById(inputId);
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        triggerEl.textContent = 'Hide';
+      } else {
+        inp.type = 'password';
+        triggerEl.textContent = 'Show';
+      }
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('loginSubmitBtn');
+
+      btn.disabled = true;
+      btn.innerHTML = 'Signing In...';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+
+        if (data.success && data.token) {
+          localStorage.setItem('grocery_admin_token', data.token);
+          localStorage.setItem('grocery_admin_user', JSON.stringify(data.admin));
+          showAlert('Login successful! Redirecting to dashboard...', false);
+          setTimeout(() => {
+            window.location.href = '/admin/';
+          }, 600);
+        } else {
+          showAlert(data.error || 'Invalid username or password.');
+          btn.disabled = false;
+          btn.innerHTML = 'Log In to Dashboard ➔';
+        }
+      } catch (err) {
+        showAlert('Network error. Is the server running?');
+        btn.disabled = false;
+        btn.innerHTML = 'Log In to Dashboard ➔';
+      }
+    }
+
+    async function handleForgotPassword(e) {
+      e.preventDefault();
+      const email = document.getElementById('forgotEmail').value;
+      const btn = document.getElementById('forgotSubmitBtn');
+
+      btn.disabled = true;
+      btn.innerHTML = 'Processing...';
+
+      try {
+        const res = await fetch('/api/auth/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          showAlert(data.message, false);
+          document.getElementById('resetFieldsContainer').style.display = 'block';
+          if (data.resetToken) {
+            document.getElementById('resetTokenInput').value = data.resetToken;
+          }
+        } else {
+          showAlert(data.error || 'Failed to request reset token.');
+        }
+      } catch (err) {
+        showAlert('Server communication error.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Generate Reset Token';
+      }
+    }
+
+    async function handlePerformReset() {
+      const token = document.getElementById('resetTokenInput').value.trim();
+      const newPassword = document.getElementById('newPasswordInput').value;
+
+      if (!token || !newPassword) {
+        showAlert('Please provide both token and new password.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/auth/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token, newPassword })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          showAlert(data.message + ' You can now sign in.', false);
+          setTimeout(() => {
+            switchLoginTab('signin');
+            document.getElementById('loginPassword').value = newPassword;
+          }, 1500);
+        } else {
+          showAlert(data.error || 'Password update failed.');
+        }
+      } catch (err) {
+        showAlert('Reset request error.');
+      }
+    }
+  </script>
+</body>
+</html>

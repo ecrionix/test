@@ -89,55 +89,7 @@
       }
     ],
     "paymentAccepted": "Cash, UPI, Google Pay, PhonePe, Paytm, Credit Card, Debit Card",
-    "currenciesAccepted": "INR",
-    "areaServed": [
-      {
-        "@type": "AdministrativeArea",
-        "name": "Tiruppur"
-      },
-      {
-        "@type": "Place",
-        "name": "Kumaran Road"
-      },
-      {
-        "@type": "Place",
-        "name": "PN Road"
-      },
-      {
-        "@type": "Place",
-        "name": "Avinashi Road"
-      },
-      {
-        "@type": "Place",
-        "name": "College Road"
-      },
-      {
-        "@type": "Place",
-        "name": "Kangeyam Road"
-      }
-    ],
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Grocery Categories",
-      "itemListElement": [
-        {
-          "@type": "OfferCatalog",
-          "name": "Fresh Vegetables and Fruits"
-        },
-        {
-          "@type": "OfferCatalog",
-          "name": "Rice, Dals & Pulses"
-        },
-        {
-          "@type": "OfferCatalog",
-          "name": "Cooking Oils & Masalas"
-        },
-        {
-          "@type": "OfferCatalog",
-          "name": "Dairy Products & Daily Essentials"
-        }
-      ]
-    }
+    "currenciesAccepted": "INR"
   }
   </script>
 
@@ -178,21 +130,20 @@
   <style>
     /* -------------------------------------------------------------
        DESIGN TOKENS & RESET
-       Colour Palette: Fresh Greens, Clean Whites, Warm Gold Accents
        ------------------------------------------------------------- */
     :root {
-      --primary: #059669;        /* Emerald Green */
-      --primary-dark: #047857;   /* Deep Forest Green */
-      --primary-light: #ecfdf5;  /* Soft Mint Tint */
+      --primary: #059669;
+      --primary-dark: #047857;
+      --primary-light: #ecfdf5;
       --primary-border: #a7f3d0;
-      --secondary: #f59e0b;      /* Warm Golden Amber */
+      --secondary: #f59e0b;
       --secondary-light: #fef3c7;
-      --accent-wa: #25d366;      /* Official WhatsApp Green */
+      --accent-wa: #25d366;
       --accent-wa-dark: #128c7e;
-      --text-main: #0f172a;      /* Slate 900 */
-      --text-muted: #475569;     /* Slate 600 */
-      --text-subtle: #64748b;    /* Slate 500 */
-      --bg-body: #f8fafc;        /* Slate 50 */
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #64748b;
+      --bg-body: #f8fafc;
       --bg-card: #ffffff;
       --border-subtle: #e2e8f0;
       --border-hover: #cbd5e1;
@@ -227,7 +178,7 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
-      padding-bottom: 72px; /* For mobile action bar */
+      padding-bottom: 72px;
     }
 
     @media (min-width: 768px) {
@@ -270,9 +221,7 @@
       padding-right: 1.25rem;
     }
 
-    /* -------------------------------------------------------------
-       TOP NOTIFICATION BAR (Live Timing & Location Highlight)
-       ------------------------------------------------------------- */
+    /* TOP NOTIFICATION BAR */
     .top-bar {
       background: #064e3b;
       color: #ecfdf5;
@@ -334,9 +283,19 @@
       text-decoration: underline;
     }
 
-    /* -------------------------------------------------------------
-       HEADER & NAVIGATION
-       ------------------------------------------------------------- */
+    /* Announcement Bar */
+    #announcementBar {
+      background: #fef3c7;
+      color: #92400e;
+      text-align: center;
+      padding: 8px 14px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-bottom: 1px solid #fde68a;
+      display: none;
+    }
+
+    /* HEADER & NAVIGATION */
     .site-header {
       position: sticky;
       top: 0;
@@ -445,6 +404,23 @@
       box-shadow: 0 6px 16px rgba(37, 211, 102, 0.45);
     }
 
+    .btn-admin-pill {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #64748b;
+      background: #f1f5f9;
+      border: 1px solid var(--border-subtle);
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-admin-pill:hover {
+      color: var(--primary);
+      border-color: var(--primary-border);
+    }
+
     .mobile-menu-toggle {
       display: flex;
       align-items: center;
@@ -463,7 +439,6 @@
       }
     }
 
-    /* Mobile Drawer */
     .mobile-drawer {
       display: none;
       background: #ffffff;
@@ -488,9 +463,7 @@
       padding: 6px 0;
     }
 
-    /* -------------------------------------------------------------
-       HERO SECTION
-       ------------------------------------------------------------- */
+    /* HERO SECTION */
     .hero-section {
       position: relative;
       background: linear-gradient(175deg, #f0fdf4 0%, #ffffff 60%, #f8fafc 100%);
@@ -527,11 +500,6 @@
       font-weight: 700;
       margin-bottom: 16px;
       box-shadow: 0 2px 6px rgba(5, 150, 105, 0.08);
-    }
-
-    .trust-pill-icon {
-      display: inline-flex;
-      color: var(--secondary);
     }
 
     .hero-title {
@@ -622,11 +590,6 @@
       flex-shrink: 0;
     }
 
-    /* Hero Visual Card Showcase */
-    .hero-visual-wrapper {
-      position: relative;
-    }
-
     .hero-main-card {
       position: relative;
       border-radius: var(--radius-lg);
@@ -706,9 +669,7 @@
       gap: 4px;
     }
 
-    /* -------------------------------------------------------------
-       SECTION HEADINGS
-       ------------------------------------------------------------- */
+    /* SECTION HEADINGS */
     .section-header {
       text-align: center;
       max-width: 650px;
@@ -742,9 +703,7 @@
       line-height: 1.6;
     }
 
-    /* -------------------------------------------------------------
-       CATEGORIES SECTION (11 Specified Categories)
-       ------------------------------------------------------------- */
+    /* CATEGORIES SECTION */
     .categories-section {
       padding: 70px 0;
       background: #ffffff;
@@ -839,9 +798,7 @@
       border-radius: var(--radius-full);
     }
 
-    /* -------------------------------------------------------------
-       WHY CHOOSE US (4 Feature Cards)
-       ------------------------------------------------------------- */
+    /* WHY CHOOSE US */
     .why-us-section {
       padding: 70px 0;
       background: linear-gradient(180deg, #f8fafc 0%, #ecfdf5 100%);
@@ -911,9 +868,7 @@
       line-height: 1.6;
     }
 
-    /* -------------------------------------------------------------
-       HANDWRITTEN LIST WHATSAPP SPECIAL BANNER
-       ------------------------------------------------------------- */
+    /* HANDWRITTEN LIST CALLOUT */
     .paper-order-banner {
       background: linear-gradient(135deg, #064e3b 0%, #047857 60%, #065f46 100%);
       border-radius: var(--radius-lg);
@@ -968,9 +923,7 @@
       transform: scale(1.03);
     }
 
-    /* -------------------------------------------------------------
-       POPULAR PRODUCTS SECTION
-       ------------------------------------------------------------- */
+    /* PRODUCTS SECTION */
     .products-section {
       padding: 75px 0;
       background: #ffffff;
@@ -1206,9 +1159,7 @@
       border: 1px dashed var(--border-subtle);
     }
 
-    /* -------------------------------------------------------------
-       SHOP INFORMATION SECTION (Location, Timings, Tiruppur Focus)
-       ------------------------------------------------------------- */
+    /* SHOP INFO SECTION */
     .shop-info-section {
       padding: 70px 0;
       background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
@@ -1300,7 +1251,6 @@
       border: 1px solid #e2e8f0;
     }
 
-    /* Embedded Map Card */
     .map-card {
       background: #ffffff;
       border: 1px solid var(--border-subtle);
@@ -1350,9 +1300,7 @@
       background: var(--primary-dark);
     }
 
-    /* -------------------------------------------------------------
-       CUSTOMER TRUST & TESTIMONIALS
-       ------------------------------------------------------------- */
+    /* CUSTOMER TRUST */
     .trust-section {
       padding: 70px 0;
       background: #ffffff;
@@ -1467,9 +1415,7 @@
       border: 1px solid var(--border-subtle);
     }
 
-    /* -------------------------------------------------------------
-       FOOTER
-       ------------------------------------------------------------- */
+    /* FOOTER */
     .site-footer {
       background: #064e3b;
       color: #ecfdf5;
@@ -1567,12 +1513,10 @@
       }
     }
 
-    /* -------------------------------------------------------------
-       FLOATING WHATSAPP BUTTON (Persistent on every screen)
-       ------------------------------------------------------------- */
+    /* FLOATING WHATSAPP BUTTON */
     .floating-wa-btn {
       position: fixed;
-      bottom: 84px; /* above mobile bar */
+      bottom: 84px;
       right: 20px;
       z-index: 99;
       background: var(--accent-wa);
@@ -1624,9 +1568,7 @@
       transform: translateX(0);
     }
 
-    /* -------------------------------------------------------------
-       MOBILE QUICK-ACTION BAR (High Conversion for Local Indian Retail)
-       ------------------------------------------------------------- */
+    /* MOBILE ACTION BAR */
     .mobile-action-bar {
       position: fixed;
       bottom: 0;
@@ -1664,33 +1606,20 @@
       color: #ffffff;
       border-right: none;
     }
-
-    /* Utilities */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
   </style>
 </head>
 <body>
 
   <!-- =========================================================
-       1. EDITABLE STORE CONFIGURATION (Easily configured in one place)
+       1. EDITABLE STORE CONFIGURATION (Updated dynamically via API)
        ========================================================= -->
   <script>
-    const STORE_CONFIG = {
+    let STORE_CONFIG = {
       name: "Sri Murugan Daily Fresh",
       tagline: "Tiruppur's Favourite Neighbourhood Grocery Store",
       phoneDisplay: "+91 98765 43210",
       phoneRaw: "+919876543210",
-      whatsappNumber: "919876543210", // Format: 91XXXXXXXXXX (Indian country code 91)
+      whatsappNumber: "919876543210", // Format: 91XXXXXXXXXX
       addressLine1: "142, Kumaran Road, Near Railway Station",
       addressLine2: "Old Bus Stand Area, Tiruppur, Tamil Nadu - 641 601",
       city: "Tiruppur",
@@ -1701,18 +1630,16 @@
       deliveryRadius: "Fast 30-45 Mins Delivery across PN Road, Avinashi Road, College Road & Kumaran Road"
     };
 
-    /**
-     * Helper to create sanitized WhatsApp URLs with custom message
-     */
     function getWhatsAppUrl(customMessage) {
       const encodedMsg = encodeURIComponent(customMessage.trim());
       return `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodedMsg}`;
     }
   </script>
 
-  <!-- =========================================================
-       2. TOP NOTIFICATION BAR (Timings & Live Open Status)
-       ========================================================= -->
+  <!-- Top Announcement Bar (Dynamic) -->
+  <aside id="announcementBar"></aside>
+
+  <!-- TOP NOTIFICATION BAR -->
   <aside class="top-bar" aria-label="Store Status & Quick Info">
     <div class="container top-bar-inner">
       <div class="top-bar-left">
@@ -1725,25 +1652,24 @@
         </span>
       </div>
       <div class="top-bar-right">
-        <a href="tel:+919876543210" class="top-link" title="Call Sri Murugan Daily Fresh">
+        <a href="tel:+919876543210" class="top-link" id="topBarPhoneLink" title="Call Store">
           📞 Call: +91 98765 43210
         </a>
         <a href="#shop-info" class="top-link" title="Store Timings & Address">
           ⏱️ Store Details
         </a>
+        <a href="/admin" class="btn-admin-pill" title="Shop Owner Admin Portal">
+          🔒 Store Admin
+        </a>
       </div>
     </div>
   </aside>
 
-  <!-- =========================================================
-       3. SITE HEADER & NAVIGATION
-       ========================================================= -->
+  <!-- SITE HEADER & NAVIGATION -->
   <header class="site-header">
     <div class="container nav-container">
-      <!-- Brand Logo -->
       <a href="#" class="brand-logo" aria-label="Sri Murugan Daily Fresh Tiruppur Home">
         <div class="brand-icon">
-          <!-- Grocery Bag / Shopping Basket SVG -->
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
           </svg>
@@ -1754,7 +1680,6 @@
         </div>
       </a>
 
-      <!-- Desktop Nav -->
       <nav aria-label="Main Navigation">
         <ul class="nav-menu">
           <li><a href="#hero" class="nav-link">Home</a></li>
@@ -1765,7 +1690,6 @@
         </ul>
       </nav>
 
-      <!-- Header CTA & Mobile Toggle -->
       <div class="header-actions">
         <a
           href="https://wa.me/919876543210?text=Hi%20Sri%20Murugan%20Store%2C%20I%20would%20like%20to%20place%20a%20grocery%20order."
@@ -1799,40 +1723,37 @@
         <li><a href="#products" class="mobile-nav-link" onclick="closeDrawer()">🛒 Popular Products</a></li>
         <li><a href="#shop-info" class="mobile-nav-link" onclick="closeDrawer()">📍 Shop Location &amp; Timings</a></li>
         <li><a href="#customer-trust" class="mobile-nav-link" onclick="closeDrawer()">💬 Customer Reviews</a></li>
+        <li><a href="/admin" class="mobile-nav-link" style="color:var(--primary); font-weight:800;">🔒 Shop Owner Admin</a></li>
       </ul>
     </div>
   </header>
 
+  <!-- Active Offers Banner Container (Rendered dynamically if active offers exist) -->
+  <div id="activeOffersBanner" class="container" style="display:none; margin-top:20px;"></div>
+
   <main>
-    <!-- =========================================================
-         4. HERO SECTION
-         ========================================================= -->
+    <!-- HERO SECTION -->
     <section class="hero-section" id="hero">
       <div class="container">
         <div class="hero-grid">
-          <!-- Hero Text Content -->
           <div class="hero-text-content">
-            <!-- Small Trust Indicator -->
-            <div class="trust-pill">
+            <div class="trust-pill" id="heroTrustDisplay">
               <span class="trust-pill-icon">📍</span>
-              <span>Serving Your Neighbourhood in Tiruppur</span>
+              <span id="heroTrustText">Serving Your Neighbourhood in Tiruppur</span>
             </div>
 
-            <!-- Main Headline -->
-            <h2 class="hero-title">
+            <h2 class="hero-title" id="heroTitleDisplay">
               Your Neighbourhood Grocery Store in <span class="highlight">Tiruppur</span>
             </h2>
 
-            <!-- Subtitle -->
-            <p class="hero-subtitle">
+            <p class="hero-subtitle" id="heroSubtitleDisplay">
               Fresh groceries, everyday essentials, and quality products at affordable prices.
               Everything you need, just around the corner!
             </p>
 
-            <!-- CTA Buttons -->
             <div class="hero-cta-group">
               <a
-                href="https://wa.me/919876543210?text=Hi%20Sri%20Murugan%20Store%2C%20I%20would%20like%20to%20order%20groceries.%20Please%20let%20me%20know%20how%20to%20proceed."
+                href="https://wa.me/919876543210?text=Hi%20Sri%20Murugan%20Store%2C%20I%20would%20like%20to%20order%20groceries."
                 target="_blank"
                 rel="noopener noreferrer"
                 class="btn btn-wa-hero"
@@ -1853,7 +1774,6 @@
               </a>
             </div>
 
-            <!-- Mini Trust Badges Strip -->
             <div class="hero-features-strip">
               <div class="feature-item-mini">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -1870,19 +1790,17 @@
             </div>
           </div>
 
-          <!-- Hero Visual Banner Card -->
           <div class="hero-visual-wrapper">
             <div class="hero-main-card">
               <img
                 src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80"
-                alt="Fresh vegetables, fruits and groceries display at Sri Murugan Daily Fresh grocery store in Tiruppur"
+                alt="Fresh vegetables, fruits and groceries display at Sri Murugan Daily Fresh in Tiruppur"
                 class="hero-image-img"
                 width="800"
                 height="500"
                 loading="eager"
               />
 
-              <!-- Floating Review Badge -->
               <div class="hero-floating-badge">
                 <div class="hero-floating-left">
                   <div class="hero-floating-avatar">🧺</div>
@@ -1901,9 +1819,7 @@
       </div>
     </section>
 
-    <!-- =========================================================
-         5. PRODUCT CATEGORIES (All 11 Categories)
-         ========================================================= -->
+    <!-- PRODUCT CATEGORIES -->
     <section class="categories-section" id="categories">
       <div class="container">
         <div class="section-header">
@@ -1914,96 +1830,74 @@
           </p>
         </div>
 
-        <div class="categories-grid">
-          <!-- 1. Fresh Vegetables -->
+        <div class="categories-grid" id="categoriesGridContainer">
+          <!-- Populated dynamically via syncPublicWebsite() or default fallback -->
           <div class="category-card" onclick="enquireCategory('Fresh Vegetables')">
             <div class="category-icon-box">🥦</div>
             <h3 class="category-name">Fresh Vegetables</h3>
             <span class="category-subname">நாட்டு காய்கறிகள்</span>
             <span class="category-count">Daily Harvest</span>
           </div>
-
-          <!-- 2. Fresh Fruits -->
           <div class="category-card" onclick="enquireCategory('Fresh Fruits')">
             <div class="category-icon-box">🍎</div>
             <h3 class="category-name">Fresh Fruits</h3>
             <span class="category-subname">புதிய பழங்கள்</span>
             <span class="category-count">Seasonal &amp; Fresh</span>
           </div>
-
-          <!-- 3. Rice & Grains -->
           <div class="category-card" onclick="enquireCategory('Rice & Grains')">
             <div class="category-icon-box">🌾</div>
             <h3 class="category-name">Rice &amp; Grains</h3>
             <span class="category-subname">அரிசி &amp; தானியங்கள்</span>
             <span class="category-count">Ponni &amp; Idli Rice</span>
           </div>
-
-          <!-- 4. Dals & Pulses -->
           <div class="category-card" onclick="enquireCategory('Dals & Pulses')">
             <div class="category-icon-box">🥣</div>
             <h3 class="category-name">Dals &amp; Pulses</h3>
             <span class="category-subname">பருப்பு வகைகள்</span>
             <span class="category-count">Unpolished &amp; Pure</span>
           </div>
-
-          <!-- 5. Cooking Oil -->
           <div class="category-card" onclick="enquireCategory('Cooking Oil')">
             <div class="category-icon-box">🛢️</div>
             <h3 class="category-name">Cooking Oil</h3>
             <span class="category-subname">மரச்செக்கு எண்ணெய்</span>
             <span class="category-count">Cold-Pressed Oils</span>
           </div>
-
-          <!-- 6. Spices & Masalas -->
           <div class="category-card" onclick="enquireCategory('Spices & Masalas')">
             <div class="category-icon-box">🌶️</div>
             <h3 class="category-name">Spices &amp; Masalas</h3>
             <span class="category-subname">மசாலா &amp; மளிகை</span>
             <span class="category-count">Aromatic Spices</span>
           </div>
-
-          <!-- 7. Snacks & Biscuits -->
           <div class="category-card" onclick="enquireCategory('Snacks & Biscuits')">
             <div class="category-icon-box">🍪</div>
             <h3 class="category-name">Snacks &amp; Biscuits</h3>
             <span class="category-subname">சிற்றுண்டிகள்</span>
             <span class="category-count">Tea Time Favourites</span>
           </div>
-
-          <!-- 8. Dairy Products -->
           <div class="category-card" onclick="enquireCategory('Dairy Products')">
             <div class="category-icon-box">🥛</div>
             <h3 class="category-name">Dairy Products</h3>
             <span class="category-subname">பால் &amp; தயிர்</span>
             <span class="category-count">Aavin &amp; Fresh Curd</span>
           </div>
-
-          <!-- 9. Beverages -->
           <div class="category-card" onclick="enquireCategory('Beverages')">
             <div class="category-icon-box">☕</div>
             <h3 class="category-name">Beverages</h3>
             <span class="category-subname">டீ, காபி &amp; பானங்கள்</span>
             <span class="category-count">Filter Coffee &amp; Tea</span>
           </div>
-
-          <!-- 10. Household Essentials -->
           <div class="category-card" onclick="enquireCategory('Household Essentials')">
             <div class="category-icon-box">🧼</div>
             <h3 class="category-name">Household Essentials</h3>
             <span class="category-subname">வீட்டு உபயோக பொருட்கள்</span>
             <span class="category-count">Detergents &amp; Cleaners</span>
           </div>
-
-          <!-- 11. Personal Care -->
           <div class="category-card" onclick="enquireCategory('Personal Care')">
             <div class="category-icon-box">🧴</div>
             <h3 class="category-name">Personal Care</h3>
             <span class="category-subname">சுய பராமரிப்பு</span>
             <span class="category-count">Soaps &amp; Shampoos</span>
           </div>
-
-          <!-- 12. Quick Enquiry / Full Catalog -->
           <div class="category-card" onclick="enquireCategory('General Grocery List')" style="background: var(--primary-light); border-color: var(--primary);">
             <div class="category-icon-box" style="background: var(--primary); color: #ffffff;">📝</div>
             <h3 class="category-name" style="color: var(--primary-dark);">Custom List</h3>
@@ -2014,9 +1908,7 @@
       </div>
     </section>
 
-    <!-- =========================================================
-         6. WHY CHOOSE US (4 Feature Cards)
-         ========================================================= -->
+    <!-- WHY CHOOSE US -->
     <section class="why-us-section" id="why-us">
       <div class="container">
         <div class="section-header">
@@ -2028,52 +1920,36 @@
         </div>
 
         <div class="features-grid">
-          <!-- Card 1 -->
           <div class="feature-card">
-            <div class="feature-icon-wrapper">
-              🌱
-            </div>
+            <div class="feature-icon-wrapper">🌱</div>
             <h3 class="feature-title">Fresh and Quality Products</h3>
             <p class="feature-text">
-              Directly sourced vegetables, authentic Tamil Nadu rice varieties, and fresh daily supplies thoroughly checked for purity and freshness.
+              Directly sourced vegetables, authentic Tamil Nadu rice varieties, and fresh daily supplies thoroughly checked for purity.
             </p>
           </div>
-
-          <!-- Card 2 -->
           <div class="feature-card">
-            <div class="feature-icon-wrapper">
-              🏷️
-            </div>
+            <div class="feature-icon-wrapper">🏷️</div>
             <h3 class="feature-title">Affordable Everyday Prices</h3>
             <p class="feature-text">
               Fair, transparent local market pricing without corporate supermarket markups. Genuine savings for your monthly household budget.
             </p>
           </div>
-
-          <!-- Card 3 -->
           <div class="feature-card">
-            <div class="feature-icon-wrapper">
-              🤝
-            </div>
+            <div class="feature-icon-wrapper">🤝</div>
             <h3 class="feature-title">Friendly Local Service</h3>
             <p class="feature-text">
               We know our regular customers by name! Friendly, respectful service, flexible exchanges, and prompt attention to your family's preferences.
             </p>
           </div>
-
-          <!-- Card 4 -->
           <div class="feature-card">
-            <div class="feature-icon-wrapper">
-              💬
-            </div>
+            <div class="feature-icon-wrapper">💬</div>
             <h3 class="feature-title">Convenient WhatsApp Ordering</h3>
             <p class="feature-text">
-              No complicated apps or account sign-ups. Just send your grocery list text or photo over WhatsApp, and we'll deliver it promptly to your doorstep.
+              No complicated apps or account sign-ups. Just send your grocery list text or photo over WhatsApp, and we'll deliver promptly.
             </p>
           </div>
         </div>
 
-        <!-- SPECIAL HANDWRITTEN LIST CALLOUT BANNER -->
         <div class="paper-order-banner">
           <div class="paper-order-content">
             <h3>📸 Have a Handwritten Grocery List?</h3>
@@ -2082,7 +1958,7 @@
             </p>
           </div>
           <a
-            href="https://wa.me/919876543210?text=Hi%20Sri%20Murugan%20Store%2C%20I%20am%20sending%20a%20photo%20of%20my%20handwritten%20grocery%20list.%20Please%20verify%20and%20let%20me%20know%20the%20bill."
+            href="https://wa.me/919876543210?text=Hi%20Sri%20Murugan%20Store%2C%20I%20am%20sending%20a%20photo%20of%20my%20handwritten%20grocery%20list."
             target="_blank"
             rel="noopener noreferrer"
             class="btn-paper-wa"
@@ -2096,9 +1972,7 @@
       </div>
     </section>
 
-    <!-- =========================================================
-         7. POPULAR PRODUCTS WITH WHATSAPP ORDERING
-         ========================================================= -->
+    <!-- POPULAR PRODUCTS SECTION -->
     <section class="products-section" id="products">
       <div class="container">
         <div class="section-header">
@@ -2109,24 +1983,18 @@
           </p>
         </div>
 
-        <!-- Filter tabs for quick view -->
-        <div class="product-filter-bar">
+        <div class="product-filter-bar" id="productFilterBarContainer">
           <button class="filter-btn active" onclick="filterProducts('all', this)">All Items</button>
-          <button class="filter-btn" onclick="filterProducts('vegetables', this)">Vegetables &amp; Fresh</button>
-          <button class="filter-btn" onclick="filterProducts('rice-dals', this)">Rice &amp; Dals</button>
-          <button class="filter-btn" onclick="filterProducts('oils-spices', this)">Oils &amp; Masalas</button>
-          <button class="filter-btn" onclick="filterProducts('dairy-tea', this)">Dairy &amp; Tea</button>
         </div>
 
-        <!-- Dynamic Product Cards Grid -->
         <div class="products-grid" id="productGridContainer">
-          <!-- Product Card 1: Ponni Rice -->
+          <!-- Loaded dynamically from database, with fallback -->
           <article class="product-card" data-category="rice-dals">
             <span class="product-badge gold">Best Seller</span>
             <div class="product-image-box">
               <img
                 src="https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80"
-                alt="Premium BPT Deluxe Ponni Boiled Rice bag available at Tiruppur grocery store"
+                alt="BPT Deluxe Ponni Rice"
                 class="product-img"
                 loading="lazy"
               />
@@ -2135,282 +2003,18 @@
               <span class="product-category-tag">Rice &amp; Grains</span>
               <h3 class="product-title">BPT Deluxe Ponni Rice</h3>
               <p class="product-tamil-name">முதல் தரம் பொன்னி புழுங்கல் அரிசி</p>
-
               <div class="product-bottom-row">
                 <div class="product-price-box">
                   <span class="product-price">₹340</span>
                   <span class="product-unit">per 5 kg bag</span>
                 </div>
                 <div class="product-qty-stepper">
-                  <button class="qty-btn" onclick="adjustQty('p1', -1)" aria-label="Decrease quantity">-</button>
+                  <button class="qty-btn" onclick="adjustQty('p1', -1)">-</button>
                   <span class="qty-display" id="qty-p1">1</span>
-                  <button class="qty-btn" onclick="adjustQty('p1', 1)" aria-label="Increase quantity">+</button>
+                  <button class="qty-btn" onclick="adjustQty('p1', 1)">+</button>
                 </div>
               </div>
-
-              <button
-                class="btn-product-wa"
-                onclick="orderProductOnWhatsApp('BPT Deluxe Ponni Rice (5 kg)', 'p1')"
-              >
-                <span>Order on WhatsApp</span> 📲
-              </button>
-            </div>
-          </article>
-
-          <!-- Product Card 2: Fresh Country Tomatoes -->
-          <article class="product-card" data-category="vegetables">
-            <span class="product-badge">Farm Fresh</span>
-            <div class="product-image-box">
-              <img
-                src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80"
-                alt="Fresh farm ripe country tomatoes at Tiruppur vegetable shop"
-                class="product-img"
-                loading="lazy"
-              />
-            </div>
-            <div class="product-info">
-              <span class="product-category-tag">Fresh Vegetables</span>
-              <h3 class="product-title">Country Tomatoes</h3>
-              <p class="product-tamil-name">நாட்டு தக்காளி (பண்ணை வரத்து)</p>
-
-              <div class="product-bottom-row">
-                <div class="product-price-box">
-                  <span class="product-price">₹38</span>
-                  <span class="product-unit">per 1 kg</span>
-                </div>
-                <div class="product-qty-stepper">
-                  <button class="qty-btn" onclick="adjustQty('p2', -1)" aria-label="Decrease quantity">-</button>
-                  <span class="qty-display" id="qty-p2">1</span>
-                  <button class="qty-btn" onclick="adjustQty('p2', 1)" aria-label="Increase quantity">+</button>
-                </div>
-              </div>
-
-              <button
-                class="btn-product-wa"
-                onclick="orderProductOnWhatsApp('Country Tomatoes (1 kg)', 'p2')"
-              >
-                <span>Order on WhatsApp</span> 📲
-              </button>
-            </div>
-          </article>
-
-          <!-- Product Card 3: Premium Toor Dal -->
-          <article class="product-card" data-category="rice-dals">
-            <span class="product-badge">Unpolished</span>
-            <div class="product-image-box">
-              <img
-                src="https://images.unsplash.com/photo-1585994192701-f1a505c817ea?auto=format&fit=crop&w=600&q=80"
-                alt="Premium unpolished Toor Dal yellow lentils at grocery store in Tiruppur"
-                class="product-img"
-                loading="lazy"
-              />
-            </div>
-            <div class="product-info">
-              <span class="product-category-tag">Dals &amp; Pulses</span>
-              <h3 class="product-title">First Quality Toor Dal</h3>
-              <p class="product-tamil-name">முதல் தரம் துவரம் பருப்பு</p>
-
-              <div class="product-bottom-row">
-                <div class="product-price-box">
-                  <span class="product-price">₹155</span>
-                  <span class="product-unit">per 1 kg</span>
-                </div>
-                <div class="product-qty-stepper">
-                  <button class="qty-btn" onclick="adjustQty('p3', -1)" aria-label="Decrease quantity">-</button>
-                  <span class="qty-display" id="qty-p3">1</span>
-                  <button class="qty-btn" onclick="adjustQty('p3', 1)" aria-label="Increase quantity">+</button>
-                </div>
-              </div>
-
-              <button
-                class="btn-product-wa"
-                onclick="orderProductOnWhatsApp('First Quality Toor Dal (1 kg)', 'p3')"
-              >
-                <span>Order on WhatsApp</span> 📲
-              </button>
-            </div>
-          </article>
-
-          <!-- Product Card 4: Cold-Pressed Groundnut Oil -->
-          <article class="product-card" data-category="oils-spices">
-            <span class="product-badge gold">Traditional</span>
-            <div class="product-image-box">
-              <img
-                src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80"
-                alt="Traditional cold pressed pure groundnut oil at Sri Murugan store Tiruppur"
-                class="product-img"
-                loading="lazy"
-              />
-            </div>
-            <div class="product-info">
-              <span class="product-category-tag">Cooking Oil</span>
-              <h3 class="product-title">Cold-Pressed Groundnut Oil</h3>
-              <p class="product-tamil-name">மரச்செக்கு கடலை எண்ணெய்</p>
-
-              <div class="product-bottom-row">
-                <div class="product-price-box">
-                  <span class="product-price">₹210</span>
-                  <span class="product-unit">per 1 Litre</span>
-                </div>
-                <div class="product-qty-stepper">
-                  <button class="qty-btn" onclick="adjustQty('p4', -1)" aria-label="Decrease quantity">-</button>
-                  <span class="qty-display" id="qty-p4">1</span>
-                  <button class="qty-btn" onclick="adjustQty('p4', 1)" aria-label="Increase quantity">+</button>
-                </div>
-              </div>
-
-              <button
-                class="btn-product-wa"
-                onclick="orderProductOnWhatsApp('Cold-Pressed Groundnut Oil (1 Ltr)', 'p4')"
-              >
-                <span>Order on WhatsApp</span> 📲
-              </button>
-            </div>
-          </article>
-
-          <!-- Product Card 5: Small Shallots (Chinna Vengayam) -->
-          <article class="product-card" data-category="vegetables">
-            <span class="product-badge">Daily Staple</span>
-            <div class="product-image-box">
-              <img
-                src="https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=600&q=80"
-                alt="Fresh small sambar onions shallots in Tiruppur vegetable market"
-                class="product-img"
-                loading="lazy"
-              />
-            </div>
-            <div class="product-info">
-              <span class="product-category-tag">Fresh Vegetables</span>
-              <h3 class="product-title">Small Sambar Onions</h3>
-              <p class="product-tamil-name">நாட்டு சின்ன வெங்காயம்</p>
-
-              <div class="product-bottom-row">
-                <div class="product-price-box">
-                  <span class="product-price">₹65</span>
-                  <span class="product-unit">per 1 kg</span>
-                </div>
-                <div class="product-qty-stepper">
-                  <button class="qty-btn" onclick="adjustQty('p5', -1)" aria-label="Decrease quantity">-</button>
-                  <span class="qty-display" id="qty-p5">1</span>
-                  <button class="qty-btn" onclick="adjustQty('p5', 1)" aria-label="Increase quantity">+</button>
-                </div>
-              </div>
-
-              <button
-                class="btn-product-wa"
-                onclick="orderProductOnWhatsApp('Small Sambar Onions (1 kg)', 'p5')"
-              >
-                <span>Order on WhatsApp</span> 📲
-              </button>
-            </div>
-          </article>
-
-          <!-- Product Card 6: Aavin Fresh Milk -->
-          <article class="product-card" data-category="dairy-tea">
-            <span class="product-badge">Daily 6:30 AM</span>
-            <div class="product-image-box">
-              <img
-                src="https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=600&q=80"
-                alt="Fresh Aavin dairy milk pocket in Tiruppur grocery store"
-                class="product-img"
-                loading="lazy"
-              />
-            </div>
-            <div class="product-info">
-              <span class="product-category-tag">Dairy Products</span>
-              <h3 class="product-title">Aavin Fresh Milk (Blue)</h3>
-              <p class="product-tamil-name">ஆவின் பசும்பால் (பாக்கெட்)</p>
-
-              <div class="product-bottom-row">
-                <div class="product-price-box">
-                  <span class="product-price">₹22</span>
-                  <span class="product-unit">per 500 ml</span>
-                </div>
-                <div class="product-qty-stepper">
-                  <button class="qty-btn" onclick="adjustQty('p6', -1)" aria-label="Decrease quantity">-</button>
-                  <span class="qty-display" id="qty-p6">2</span>
-                  <button class="qty-btn" onclick="adjustQty('p6', 1)" aria-label="Increase quantity">+</button>
-                </div>
-              </div>
-
-              <button
-                class="btn-product-wa"
-                onclick="orderProductOnWhatsApp('Aavin Fresh Milk 500ml', 'p6')"
-              >
-                <span>Order on WhatsApp</span> 📲
-              </button>
-            </div>
-          </article>
-
-          <!-- Product Card 7: Aromatic Sambar Powder -->
-          <article class="product-card" data-category="oils-spices">
-            <span class="product-badge">Pure Spices</span>
-            <div class="product-image-box">
-              <img
-                src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80"
-                alt="Authentic Tamil Nadu Sambar powder and spices at Tiruppur grocery store"
-                class="product-img"
-                loading="lazy"
-              />
-            </div>
-            <div class="product-info">
-              <span class="product-category-tag">Spices &amp; Masalas</span>
-              <h3 class="product-title">Traditional Sambar Masala</h3>
-              <p class="product-tamil-name">நாட்டு சாம்பார் பொடி (200g)</p>
-
-              <div class="product-bottom-row">
-                <div class="product-price-box">
-                  <span class="product-price">₹52</span>
-                  <span class="product-unit">per 200g pack</span>
-                </div>
-                <div class="product-qty-stepper">
-                  <button class="qty-btn" onclick="adjustQty('p7', -1)" aria-label="Decrease quantity">-</button>
-                  <span class="qty-display" id="qty-p7">1</span>
-                  <button class="qty-btn" onclick="adjustQty('p7', 1)" aria-label="Increase quantity">+</button>
-                </div>
-              </div>
-
-              <button
-                class="btn-product-wa"
-                onclick="orderProductOnWhatsApp('Traditional Sambar Masala (200g)', 'p7')"
-              >
-                <span>Order on WhatsApp</span> 📲
-              </button>
-            </div>
-          </article>
-
-          <!-- Product Card 8: Degree Filter Coffee Powder -->
-          <article class="product-card" data-category="dairy-tea">
-            <span class="product-badge gold">South Indian Classic</span>
-            <div class="product-image-box">
-              <img
-                src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80"
-                alt="South Indian filter coffee powder freshly ground at Tiruppur shop"
-                class="product-img"
-                loading="lazy"
-              />
-            </div>
-            <div class="product-info">
-              <span class="product-category-tag">Beverages</span>
-              <h3 class="product-title">Degree Filter Coffee Powder</h3>
-              <p class="product-tamil-name">கும்பகோணம் டிகிரி காபி தூள் (80:20)</p>
-
-              <div class="product-bottom-row">
-                <div class="product-price-box">
-                  <span class="product-price">₹130</span>
-                  <span class="product-unit">per 250g pack</span>
-                </div>
-                <div class="product-qty-stepper">
-                  <button class="qty-btn" onclick="adjustQty('p8', -1)" aria-label="Decrease quantity">-</button>
-                  <span class="qty-display" id="qty-p8">1</span>
-                  <button class="qty-btn" onclick="adjustQty('p8', 1)" aria-label="Increase quantity">+</button>
-                </div>
-              </div>
-
-              <button
-                class="btn-product-wa"
-                onclick="orderProductOnWhatsApp('Degree Filter Coffee Powder (250g)', 'p8')"
-              >
+              <button class="btn-product-wa" onclick="orderProductOnWhatsApp('BPT Deluxe Ponni Rice (5 kg)', 'p1')">
                 <span>Order on WhatsApp</span> 📲
               </button>
             </div>
@@ -2419,15 +2023,13 @@
 
         <div style="text-align: center;">
           <p class="sample-notice-pill">
-            ℹ️ <em>Prices and stock are updated regularly based on daily Tiruppur mandi rates. You can freely edit these sample products.</em>
+            ℹ️ <em>Prices and inventory sync directly with the store database in real-time.</em>
           </p>
         </div>
       </div>
     </section>
 
-    <!-- =========================================================
-         8. SHOP INFORMATION (Tiruppur Address, Map & Timings)
-         ========================================================= -->
+    <!-- SHOP INFORMATION SECTION -->
     <section class="shop-info-section" id="shop-info">
       <div class="container">
         <div class="section-header">
@@ -2439,7 +2041,6 @@
         </div>
 
         <div class="shop-info-grid">
-          <!-- Left Info Card -->
           <div class="info-card">
             <div>
               <h3 style="font-size: 1.35rem; font-weight: 800; color: #064e3b; margin-bottom: 6px;">
@@ -2450,7 +2051,6 @@
               </p>
 
               <div class="info-list">
-                <!-- Address -->
                 <div class="info-item">
                   <div class="info-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -2465,7 +2065,6 @@
                   </div>
                 </div>
 
-                <!-- Timings -->
                 <div class="info-item">
                   <div class="info-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -2481,7 +2080,6 @@
                   </div>
                 </div>
 
-                <!-- Contact & WhatsApp -->
                 <div class="info-item">
                   <div class="info-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -2497,7 +2095,6 @@
               </div>
             </div>
 
-            <!-- Accepted Payments -->
             <div style="margin-top: 25px; padding-top: 18px; border-top: 1px solid var(--border-subtle);">
               <h5 style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
                 Accepted Payment Methods
@@ -2512,13 +2109,11 @@
             </div>
           </div>
 
-          <!-- Right Map Card -->
           <div class="map-card">
             <div class="map-container-box">
-              <!-- Responsive Google Maps Embed with Tiruppur Coordinates -->
               <iframe
-                title="Google Map showing Sri Murugan Daily Fresh Grocery Store Location in Tiruppur"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62635.80373248386!2d77.3022634351336!3d11.108524245645398!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba907b049b4c063%3A0x6b7724213819877b!2sTiruppur%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin!4v1700000000000"
+                title="Google Map showing Sri Murugan Daily Fresh Location in Tiruppur"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62635.80373248386!2d77.3022634351336!3d11.108524245645398!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba907b049b4c063%3A0x6b7724213819877b!2sTiruppur%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000000"
                 loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"
                 allowfullscreen=""
@@ -2543,9 +2138,7 @@
       </div>
     </section>
 
-    <!-- =========================================================
-         9. CUSTOMER TRUST & TESTIMONIALS
-         ========================================================= -->
+    <!-- CUSTOMER TRUST & TESTIMONIALS -->
     <section class="trust-section" id="customer-trust">
       <div class="container">
         <div class="section-header">
@@ -2557,7 +2150,6 @@
         </div>
 
         <div class="testimonials-grid">
-          <!-- Testimonial 1 -->
           <div class="testimonial-card">
             <div>
               <div class="stars-row">★★★★★</div>
@@ -2574,7 +2166,6 @@
             </div>
           </div>
 
-          <!-- Testimonial 2 -->
           <div class="testimonial-card">
             <div>
               <div class="stars-row">★★★★★</div>
@@ -2591,7 +2182,6 @@
             </div>
           </div>
 
-          <!-- Testimonial 3 -->
           <div class="testimonial-card">
             <div>
               <div class="stars-row">★★★★★</div>
@@ -2609,7 +2199,6 @@
           </div>
         </div>
 
-        <!-- Serving Local Neighbourhoods Bar -->
         <div class="service-areas-bar">
           <h3 class="service-areas-title">🚀 Fast Doorstep Delivery Available Across Tiruppur Localities</h3>
           <div class="service-tags-wrapper">
@@ -2628,13 +2217,10 @@
     </section>
   </main>
 
-  <!-- =========================================================
-       10. FOOTER
-       ========================================================= -->
+  <!-- FOOTER -->
   <footer class="site-footer">
     <div class="container">
       <div class="footer-grid">
-        <!-- Col 1: Brand Info -->
         <div class="footer-col">
           <h4 style="display: flex; align-items: center; gap: 8px;">
             <span>🧺</span> Sri Murugan Daily Fresh
@@ -2653,7 +2239,6 @@
           </a>
         </div>
 
-        <!-- Col 2: Quick Navigation -->
         <div class="footer-col">
           <h4>Quick Links</h4>
           <ul class="footer-links">
@@ -2662,11 +2247,10 @@
             <li><a href="#why-us" class="footer-link">Why Choose Us</a></li>
             <li><a href="#products" class="footer-link">Popular Products</a></li>
             <li><a href="#shop-info" class="footer-link">Store Location &amp; Map</a></li>
-            <li><a href="#customer-trust" class="footer-link">Customer Reviews</a></li>
+            <li><a href="/admin" class="footer-link" style="color:#6ee7b7; font-weight:700;">🔒 Shop Owner Portal</a></li>
           </ul>
         </div>
 
-        <!-- Col 3: Categories -->
         <div class="footer-col">
           <h4>Grocery Categories</h4>
           <ul class="footer-links">
@@ -2679,12 +2263,11 @@
           </ul>
         </div>
 
-        <!-- Col 4: Contact & Hours -->
         <div class="footer-col">
           <h4>Store Contact</h4>
           <div class="footer-contact-item">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>142, Kumaran Road, Near Railway Station, Tiruppur - 641 601, Tamil Nadu</span>
+            <span id="footerAddressDisplay">142, Kumaran Road, Near Railway Station, Tiruppur - 641 601, Tamil Nadu</span>
           </div>
           <div class="footer-contact-item">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -2697,7 +2280,6 @@
         </div>
       </div>
 
-      <!-- Copyright & Local SEO Notice -->
       <div class="footer-bottom">
         <p>© 2026 Sri Murugan Daily Fresh, Tiruppur. All rights reserved.</p>
         <p>Serving Tiruppur families with quality daily groceries &amp; prompt doorstep delivery.</p>
@@ -2705,9 +2287,7 @@
     </div>
   </footer>
 
-  <!-- =========================================================
-       11. PERSISTENT FLOATING WHATSAPP BUTTON (Every Screen)
-       ========================================================= -->
+  <!-- PERSISTENT FLOATING WHATSAPP BUTTON -->
   <a
     href="https://wa.me/919876543210?text=Hi%20Sri%20Murugan%20Store%2C%20I%20would%20like%20to%20order%20groceries%20for%20home%20delivery%20in%20Tiruppur."
     target="_blank"
@@ -2722,9 +2302,7 @@
     </svg>
   </a>
 
-  <!-- =========================================================
-       12. MOBILE BOTTOM ACTION BAR (Sticky on Mobile Phones)
-       ========================================================= -->
+  <!-- MOBILE BOTTOM ACTION BAR -->
   <div class="mobile-action-bar" aria-label="Quick Mobile Store Actions">
     <a href="tel:+919876543210" class="mobile-bar-btn" title="Call store">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -2754,20 +2332,10 @@
     </a>
   </div>
 
-  <!-- =========================================================
-       13. JAVASCRIPT CONTROLLERS
-       ========================================================= -->
+  <!-- JAVASCRIPT CONTROLLERS -->
   <script>
-    // Product quantity state manager
     const productQuantities = {
-      p1: 1,
-      p2: 1,
-      p3: 1,
-      p4: 1,
-      p5: 1,
-      p6: 2,
-      p7: 1,
-      p8: 1
+      p1: 1
     };
 
     function adjustQty(productId, delta) {
@@ -2781,10 +2349,6 @@
       }
     }
 
-    /**
-     * Launch WhatsApp for specific product with pre-filled message
-     * Requirement: "Hi, I would like to order 1 kg of Ponni Rice. Is it available?"
-     */
     function orderProductOnWhatsApp(productName, productId) {
       const qty = productQuantities[productId] || 1;
       const message = `Hi, I would like to order ${qty} unit(s) of ${productName}. Is it available?`;
@@ -2792,23 +2356,16 @@
       window.open(url, '_blank');
     }
 
-    /**
-     * Launch WhatsApp for broad category enquiry
-     */
     function enquireCategory(categoryName) {
       const message = `Hi Sri Murugan Daily Fresh, I would like to enquire about available items in ${categoryName}. Can you share current prices and availability?`;
       const url = getWhatsAppUrl(message);
       window.open(url, '_blank');
     }
 
-    /**
-     * Filter product cards by category
-     */
     function filterProducts(category, btn) {
-      // Toggle active button style
       const buttons = document.querySelectorAll('.filter-btn');
       buttons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      if (btn) btn.classList.add('active');
 
       const cards = document.querySelectorAll('.product-card');
       cards.forEach(card => {
@@ -2820,9 +2377,6 @@
       });
     }
 
-    /**
-     * Mobile Menu Toggle Handler
-     */
     const menuToggle = document.getElementById('mobileMenuToggle');
     const drawer = document.getElementById('mobileDrawer');
 
@@ -2838,16 +2392,13 @@
       }
     }
 
-    /**
-     * Check if currently within operating hours (6:30 AM to 10:00 PM)
-     */
     function checkOperatingStatus() {
       const now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes();
       const currentTime = hours * 60 + minutes;
-      const openTime = 6 * 60 + 30;  // 6:30 AM
-      const closeTime = 22 * 60;      // 10:00 PM
+      const openTime = 6 * 60 + 30;
+      const closeTime = 22 * 60;
 
       const statusEl = document.getElementById('storeLiveStatus');
       if (statusEl) {
@@ -2859,6 +2410,248 @@
       }
     }
     checkOperatingStatus();
+
+    // ==============================================================================
+    // DYNAMIC BACKEND DATABASE SYNCHRONIZATION
+    // Connects landing page directly with the Admin Dashboard database
+    // ==============================================================================
+    function updateAllWhatsAppLinks() {
+      const genericOrderUrl = getWhatsAppUrl('Hi Sri Murugan Store, I would like to place a grocery order.');
+      const listPhotoUrl = getWhatsAppUrl('Hi Sri Murugan Store, I am sending a photo of my handwritten grocery list.');
+      const footerChatUrl = getWhatsAppUrl('Hi, I would like to order groceries from Sri Murugan Store.');
+
+      const headerBtn = document.getElementById('headerWaBtn');
+      if (headerBtn) headerBtn.href = genericOrderUrl;
+
+      const heroBtn = document.getElementById('heroWaOrderBtn');
+      if (heroBtn) heroBtn.href = genericOrderUrl;
+
+      const floatingBtn = document.getElementById('floatingWhatsAppBtn');
+      if (floatingBtn) floatingBtn.href = genericOrderUrl;
+
+      const paperBtn = document.querySelector('.btn-paper-wa');
+      if (paperBtn) paperBtn.href = listPhotoUrl;
+
+      const mobileWaBtn = document.querySelector('.mobile-bar-btn.wa-primary');
+      if (mobileWaBtn) mobileWaBtn.href = genericOrderUrl;
+
+      const footerWaBtn = document.querySelector('.footer-col a.btn-header-wa');
+      if (footerWaBtn) footerWaBtn.href = footerChatUrl;
+    }
+
+    async function syncPublicWebsite() {
+      try {
+        const res = await fetch('/api/public/data');
+        if (!res.ok) return;
+        const json = await res.json();
+        if (!json.success || !json.data) return;
+
+        const { shop, homepage, categories, products, offers } = json.data;
+
+        // 1. Sync Shop Information
+        if (shop) {
+          if (shop.shop_name) {
+            document.querySelectorAll('.brand-text h1, .footer-col h4 span:nth-child(2)').forEach(el => el.textContent = shop.shop_name);
+            document.title = `${shop.shop_name} | Best Grocery Store in Tiruppur | Supermarket & WhatsApp Order`;
+          }
+          if (shop.tagline) {
+            document.querySelectorAll('.brand-tagline').forEach(el => el.textContent = shop.tagline.toUpperCase());
+          }
+          if (shop.whatsapp_number) {
+            STORE_CONFIG.whatsappNumber = shop.whatsapp_number;
+            updateAllWhatsAppLinks();
+          }
+          if (shop.phone_display) {
+            STORE_CONFIG.phoneDisplay = shop.phone_display;
+            const cleanPhone = shop.phone_raw || shop.phone_display.replace(/\s+/g, '');
+            document.querySelectorAll('a[href^="tel:"]').forEach(el => {
+              el.href = `tel:${cleanPhone}`;
+              el.textContent = `📞 Call: ${shop.phone_display}`;
+            });
+          }
+          if (shop.address_line1 || shop.address_line2) {
+            const fullAddr = `${shop.address_line1 || ''}, ${shop.address_line2 || ''}, ${shop.city || 'Tiruppur'} - ${shop.pincode || '641601'}`;
+            const addrEl = document.getElementById('storeAddressDisplay');
+            if (addrEl) addrEl.textContent = fullAddr;
+            const footerAddr = document.getElementById('footerAddressDisplay');
+            if (footerAddr) footerAddr.textContent = fullAddr;
+          }
+          if (shop.gmaps_url) {
+            document.querySelectorAll('a.btn-directions, .mobile-bar-btn[title="Get Map Directions"]').forEach(el => {
+              el.href = shop.gmaps_url;
+            });
+          }
+        }
+
+        // 2. Sync Homepage Content & Announcements
+        if (homepage) {
+          if (homepage.hero_headline) {
+            const titleEl = document.getElementById('heroTitleDisplay');
+            if (titleEl) titleEl.textContent = homepage.hero_headline;
+          }
+          if (homepage.hero_subtitle) {
+            const subEl = document.getElementById('heroSubtitleDisplay');
+            if (subEl) subEl.textContent = homepage.hero_subtitle;
+          }
+          if (homepage.hero_image_url) {
+            const imgEl = document.querySelector('.hero-image-img');
+            if (imgEl) imgEl.src = homepage.hero_image_url;
+          }
+          if (homepage.trust_indicator) {
+            const trustEl = document.getElementById('heroTrustText');
+            if (trustEl) trustEl.textContent = homepage.trust_indicator;
+          }
+          if (homepage.announcement_text && homepage.announcement_active === '1') {
+            const annBar = document.getElementById('announcementBar');
+            if (annBar) {
+              annBar.innerHTML = `📢 ${escapeHtml(homepage.announcement_text)}`;
+              annBar.style.display = 'block';
+            }
+          }
+        }
+
+        // 3. Render Active Offers Banner
+        if (offers && offers.length > 0) {
+          const offerBanner = document.getElementById('activeOffersBanner');
+          if (offerBanner) {
+            const topOffer = offers[0];
+            offerBanner.innerHTML = `
+              <div style="background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #065f46 100%); color:#ffffff; padding:18px 24px; border-radius:16px; box-shadow: 0 8px 25px rgba(6, 78, 59, 0.25); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; border:1px solid rgba(255,255,255,0.15);">
+                <div>
+                  <span style="background:var(--secondary); color:#21032b; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:9999px; text-transform:uppercase;">${escapeHtml(topOffer.discount_tag || 'Special Offer')}</span>
+                  <h3 style="font-size:1.25rem; font-weight:800; color:#fff; margin:6px 0 2px;">${escapeHtml(topOffer.title)}</h3>
+                  <p style="font-size:0.88rem; color:#d1fae5; margin:0;">${escapeHtml(topOffer.description || '')}</p>
+                </div>
+                <a href="${getWhatsAppUrl('Hi Sri Murugan Store, I want to claim the offer: ' + topOffer.title)}" target="_blank" rel="noopener noreferrer" style="background:#25d366; color:#ffffff; padding:10px 20px; border-radius:8px; font-weight:800; font-size:0.88rem; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 12px rgba(37,211,102,0.35);">
+                  Claim on WhatsApp ➔
+                </a>
+              </div>
+            `;
+            offerBanner.style.display = 'block';
+          }
+        }
+
+        // 4. Render Dynamic Categories
+        if (categories && categories.length > 0) {
+          const catContainer = document.getElementById('categoriesGridContainer');
+          if (catContainer) {
+            catContainer.innerHTML = categories.map(c => `
+              <div class="category-card" onclick="enquireCategory('${escapeJsString(c.name)}')">
+                <div class="category-icon-box">${c.icon || '📦'}</div>
+                <h3 class="category-name">${escapeHtml(c.name)}</h3>
+                <span class="category-subname">${escapeHtml(c.tamil_name || '')}</span>
+                <span class="category-count">Explore &amp; Order</span>
+              </div>
+            `).join('') + `
+              <div class="category-card" onclick="enquireCategory('General Grocery List')" style="background: var(--primary-light); border-color: var(--primary);">
+                <div class="category-icon-box" style="background: var(--primary); color: #ffffff;">📝</div>
+                <h3 class="category-name" style="color: var(--primary-dark);">Custom List</h3>
+                <span class="category-subname">உங்கள் மளிகை பட்டியல்</span>
+                <span class="category-count" style="background: var(--primary); color: #fff;">WhatsApp Us</span>
+              </div>
+            `;
+          }
+
+          // Build dynamic filter buttons
+          const filterBar = document.getElementById('productFilterBarContainer');
+          if (filterBar) {
+            filterBar.innerHTML = `<button class="filter-btn active" onclick="filterProducts('all', this)">All Items</button>` +
+              categories.slice(0, 5).map(c => `
+                <button class="filter-btn" onclick="filterProducts('cat_${c.id}', this)">${escapeHtml(c.name)}</button>
+              `).join('');
+          }
+        }
+
+        // 5. Render Dynamic Products
+        if (products && products.length > 0) {
+          const prodContainer = document.getElementById('productGridContainer');
+          if (prodContainer) {
+            prodContainer.innerHTML = products.map(p => {
+              const pKey = `dyn_${p.id}`;
+              productQuantities[pKey] = 1;
+
+              const isOutOfStock = !p.is_available;
+              const priceDisplay = p.offer_price
+                ? `<span class="product-price">₹${p.offer_price}</span> <span style="text-decoration:line-through; color:var(--text-subtle); font-size:0.85rem; margin-left:4px;">₹${p.price}</span>`
+                : `<span class="product-price">₹${p.price}</span>`;
+
+              return `
+                <article class="product-card" data-category="cat_${p.category_id}">
+                  ${p.badge_text ? `<span class="product-badge ${p.is_featured ? 'gold' : ''}">${escapeHtml(p.badge_text)}</span>` : ''}
+                  <div class="product-image-box">
+                    <img
+                      src="${escapeHtml(p.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80')}"
+                      alt="${escapeHtml(p.name)}"
+                      class="product-img"
+                      loading="lazy"
+                      onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80'"
+                    />
+                  </div>
+                  <div class="product-info">
+                    <span class="product-category-tag">${escapeHtml(p.category_name || 'Grocery')}</span>
+                    <h3 class="product-title">${escapeHtml(p.name)}</h3>
+                    ${p.tamil_name ? `<p class="product-tamil-name">${escapeHtml(p.tamil_name)}</p>` : ''}
+
+                    <div class="product-bottom-row">
+                      <div class="product-price-box">
+                        <div>${priceDisplay}</div>
+                        <span class="product-unit">per ${escapeHtml(p.unit || '1 kg')}</span>
+                      </div>
+                      ${!isOutOfStock ? `
+                        <div class="product-qty-stepper">
+                          <button class="qty-btn" onclick="adjustQty('${pKey}', -1)" aria-label="Decrease quantity">-</button>
+                          <span class="qty-display" id="qty-${pKey}">1</span>
+                          <button class="qty-btn" onclick="adjustQty('${pKey}', 1)" aria-label="Increase quantity">+</button>
+                        </div>
+                      ` : `
+                        <span class="status-pill danger" style="font-size:0.75rem; background:#fee2e2; color:#991b1b; padding:2px 8px; border-radius:4px; font-weight:700;">Out of Stock</span>
+                      `}
+                    </div>
+
+                    ${!isOutOfStock ? `
+                      <button
+                        class="btn-product-wa"
+                        onclick="orderProductOnWhatsApp('${escapeJsString(p.name)} (${escapeJsString(p.unit || '1 kg')})', '${pKey}')"
+                      >
+                        <span>Order on WhatsApp</span> 📲
+                      </button>
+                    ` : `
+                      <button
+                        class="btn-product-wa"
+                        style="opacity:0.65; cursor:pointer;"
+                        onclick="orderProductOnWhatsApp('Next Stock Enquiry for: ${escapeJsString(p.name)}', '${pKey}')"
+                      >
+                        <span>Enquire Next Stock</span> 📲
+                      </button>
+                    `}
+                  </div>
+                </article>
+              `;
+            }).join('');
+          }
+        }
+      } catch (err) {
+        console.warn('Backend sync note: Running with static fallback.', err);
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function escapeJsString(str) {
+      if (!str) return '';
+      return String(str).replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+
+    // Trigger sync immediately on load
+    document.addEventListener('DOMContentLoaded', syncPublicWebsite);
   </script>
 </body>
 </html>
