@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Redirecting...</title>
+  <script>
+    (function() {
+      var path = window.location.pathname;
+      // If user went to /admin or /test/admin
+      if (path.indexOf('/admin') !== -1) {
+        if (path.indexOf('/test/') !== -1) {
+          window.location.replace(window.location.origin + '/test/admin/index.html');
+        } else {
+          window.location.replace(window.location.origin + '/test/admin/index.html');
+        }
+      } else {
+        window.location.replace(window.location.origin + '/test/');
+      }
+    })();
+  </script>
+</head>
+<body style="font-family: sans-serif; text-align: center; padding: 50px;">
+  <p>Redirecting to Sri Murugan Daily Fresh Admin Portal... <a href="admin/index.html">Click here</a></p>
+</body>
+</html>

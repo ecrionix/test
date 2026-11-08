@@ -1658,7 +1658,7 @@
         <a href="#shop-info" class="top-link" title="Store Timings & Address">
           ⏱️ Store Details
         </a>
-        <a href="/admin" class="btn-admin-pill" title="Shop Owner Admin Portal">
+        <a href="admin/index.html" class="btn-admin-pill" title="Shop Owner Admin Portal">
           🔒 Store Admin
         </a>
       </div>
@@ -1723,7 +1723,7 @@
         <li><a href="#products" class="mobile-nav-link" onclick="closeDrawer()">🛒 Popular Products</a></li>
         <li><a href="#shop-info" class="mobile-nav-link" onclick="closeDrawer()">📍 Shop Location &amp; Timings</a></li>
         <li><a href="#customer-trust" class="mobile-nav-link" onclick="closeDrawer()">💬 Customer Reviews</a></li>
-        <li><a href="/admin" class="mobile-nav-link" style="color:var(--primary); font-weight:800;">🔒 Shop Owner Admin</a></li>
+        <li><a href="admin/index.html" class="mobile-nav-link" style="color:var(--primary); font-weight:800;">🔒 Shop Owner Admin</a></li>
       </ul>
     </div>
   </header>
@@ -2247,7 +2247,7 @@
             <li><a href="#why-us" class="footer-link">Why Choose Us</a></li>
             <li><a href="#products" class="footer-link">Popular Products</a></li>
             <li><a href="#shop-info" class="footer-link">Store Location &amp; Map</a></li>
-            <li><a href="/admin" class="footer-link" style="color:#6ee7b7; font-weight:700;">🔒 Shop Owner Portal</a></li>
+            <li><a href="admin/index.html" class="footer-link" style="color:#6ee7b7; font-weight:700;">🔒 Shop Owner Portal</a></li>
           </ul>
         </div>
 
@@ -2439,201 +2439,238 @@
       if (footerWaBtn) footerWaBtn.href = footerChatUrl;
     }
 
-    async function syncPublicWebsite() {
-      try {
-        const res = await fetch('/api/public/data');
-        if (!res.ok) return;
-        const json = await res.json();
-        if (!json.success || !json.data) return;
+    function applyStoreDataToDOM(data) {
+      if (!data) return;
+      const shop = data.shop;
+      const homepage = data.homepage;
+      const categories = data.categories;
+      const products = data.products;
+      const offers = data.offers;
 
-        const { shop, homepage, categories, products, offers } = json.data;
+      // 1. Sync Shop Information
+      if (shop) {
+        if (shop.shop_name) {
+          document.querySelectorAll('.brand-text h1, .footer-col h4 span:nth-child(2)').forEach(el => el.textContent = shop.shop_name);
+          document.title = `${shop.shop_name} | Best Grocery Store in Tiruppur | Supermarket & WhatsApp Order`;
+        }
+        if (shop.tagline) {
+          document.querySelectorAll('.brand-tagline').forEach(el => el.textContent = shop.tagline.toUpperCase());
+        }
+        if (shop.whatsapp_number) {
+          STORE_CONFIG.whatsappNumber = shop.whatsapp_number;
+          updateAllWhatsAppLinks();
+        }
+        if (shop.phone_display) {
+          STORE_CONFIG.phoneDisplay = shop.phone_display;
+          const cleanPhone = shop.phone_raw || shop.phone_display.replace(/\s+/g, '');
+          document.querySelectorAll('a[href^="tel:"]').forEach(el => {
+            el.href = `tel:${cleanPhone}`;
+            el.textContent = `📞 Call: ${shop.phone_display}`;
+          });
+        }
+        if (shop.address_line1 || shop.address_line2) {
+          const fullAddr = `${shop.address_line1 || ''}, ${shop.address_line2 || ''}, ${shop.city || 'Tiruppur'} - ${shop.pincode || '641601'}`;
+          const addrEl = document.getElementById('storeAddressDisplay');
+          if (addrEl) addrEl.textContent = fullAddr;
+          const footerAddr = document.getElementById('footerAddressDisplay');
+          if (footerAddr) footerAddr.textContent = fullAddr;
+        }
+        if (shop.gmaps_url) {
+          document.querySelectorAll('a.btn-directions, .mobile-bar-btn[title="Get Map Directions"]').forEach(el => {
+            el.href = shop.gmaps_url;
+          });
+        }
+      }
 
-        // 1. Sync Shop Information
-        if (shop) {
-          if (shop.shop_name) {
-            document.querySelectorAll('.brand-text h1, .footer-col h4 span:nth-child(2)').forEach(el => el.textContent = shop.shop_name);
-            document.title = `${shop.shop_name} | Best Grocery Store in Tiruppur | Supermarket & WhatsApp Order`;
+      // 2. Sync Homepage Content & Announcements
+      if (homepage) {
+        if (homepage.hero_headline) {
+          const titleEl = document.getElementById('heroTitleDisplay');
+          if (titleEl) titleEl.textContent = homepage.hero_headline;
+        }
+        if (homepage.hero_subtitle) {
+          const subEl = document.getElementById('heroSubtitleDisplay');
+          if (subEl) subEl.textContent = homepage.hero_subtitle;
+        }
+        if (homepage.hero_image_url) {
+          const imgEl = document.querySelector('.hero-image-img');
+          if (imgEl) imgEl.src = homepage.hero_image_url;
+        }
+        if (homepage.trust_indicator) {
+          const trustEl = document.getElementById('heroTrustText');
+          if (trustEl) trustEl.textContent = homepage.trust_indicator;
+        }
+        if (homepage.announcement_text && homepage.announcement_active === '1') {
+          const annBar = document.getElementById('announcementBar');
+          if (annBar) {
+            annBar.innerHTML = `📢 ${escapeHtml(homepage.announcement_text)}`;
+            annBar.style.display = 'block';
           }
-          if (shop.tagline) {
-            document.querySelectorAll('.brand-tagline').forEach(el => el.textContent = shop.tagline.toUpperCase());
-          }
-          if (shop.whatsapp_number) {
-            STORE_CONFIG.whatsappNumber = shop.whatsapp_number;
-            updateAllWhatsAppLinks();
-          }
-          if (shop.phone_display) {
-            STORE_CONFIG.phoneDisplay = shop.phone_display;
-            const cleanPhone = shop.phone_raw || shop.phone_display.replace(/\s+/g, '');
-            document.querySelectorAll('a[href^="tel:"]').forEach(el => {
-              el.href = `tel:${cleanPhone}`;
-              el.textContent = `📞 Call: ${shop.phone_display}`;
-            });
-          }
-          if (shop.address_line1 || shop.address_line2) {
-            const fullAddr = `${shop.address_line1 || ''}, ${shop.address_line2 || ''}, ${shop.city || 'Tiruppur'} - ${shop.pincode || '641601'}`;
-            const addrEl = document.getElementById('storeAddressDisplay');
-            if (addrEl) addrEl.textContent = fullAddr;
-            const footerAddr = document.getElementById('footerAddressDisplay');
-            if (footerAddr) footerAddr.textContent = fullAddr;
-          }
-          if (shop.gmaps_url) {
-            document.querySelectorAll('a.btn-directions, .mobile-bar-btn[title="Get Map Directions"]').forEach(el => {
-              el.href = shop.gmaps_url;
-            });
-          }
+        } else {
+          const annBar = document.getElementById('announcementBar');
+          if (annBar) annBar.style.display = 'none';
+        }
+      }
+
+      // 3. Render Active Offers Banner
+      if (offers && offers.length > 0) {
+        const offerBanner = document.getElementById('activeOffersBanner');
+        if (offerBanner) {
+          const topOffer = offers[0];
+          offerBanner.innerHTML = `
+            <div style="background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #065f46 100%); color:#ffffff; padding:18px 24px; border-radius:16px; box-shadow: 0 8px 25px rgba(6, 78, 59, 0.25); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; border:1px solid rgba(255,255,255,0.15);">
+              <div>
+                <span style="background:var(--secondary); color:#21032b; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:9999px; text-transform:uppercase;">${escapeHtml(topOffer.discount_tag || 'Special Offer')}</span>
+                <h3 style="font-size:1.25rem; font-weight:800; color:#fff; margin:6px 0 2px;">${escapeHtml(topOffer.title)}</h3>
+                <p style="font-size:0.88rem; color:#d1fae5; margin:0;">${escapeHtml(topOffer.description || '')}</p>
+              </div>
+              <a href="${getWhatsAppUrl('Hi Sri Murugan Store, I want to claim the offer: ' + topOffer.title)}" target="_blank" rel="noopener noreferrer" style="background:#25d366; color:#ffffff; padding:10px 20px; border-radius:8px; font-weight:800; font-size:0.88rem; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 12px rgba(37,211,102,0.35);">
+                Claim on WhatsApp ➔
+              </a>
+            </div>
+          `;
+          offerBanner.style.display = 'block';
+        }
+      }
+
+      // 4. Render Dynamic Categories
+      if (categories && categories.length > 0) {
+        const catContainer = document.getElementById('categoriesGridContainer');
+        if (catContainer) {
+          catContainer.innerHTML = categories.map(c => `
+            <div class="category-card" onclick="enquireCategory('${escapeJsString(c.name)}')">
+              <div class="category-icon-box">${c.icon || '📦'}</div>
+              <h3 class="category-name">${escapeHtml(c.name)}</h3>
+              <span class="category-subname">${escapeHtml(c.tamil_name || '')}</span>
+              <span class="category-count">Explore &amp; Order</span>
+            </div>
+          `).join('') + `
+            <div class="category-card" onclick="enquireCategory('General Grocery List')" style="background: var(--primary-light); border-color: var(--primary);">
+              <div class="category-icon-box" style="background: var(--primary); color: #ffffff;">📝</div>
+              <h3 class="category-name" style="color: var(--primary-dark);">Custom List</h3>
+              <span class="category-subname">உங்கள் மளிகை பட்டியல்</span>
+              <span class="category-count" style="background: var(--primary); color: #fff;">WhatsApp Us</span>
+            </div>
+          `;
         }
 
-        // 2. Sync Homepage Content & Announcements
-        if (homepage) {
-          if (homepage.hero_headline) {
-            const titleEl = document.getElementById('heroTitleDisplay');
-            if (titleEl) titleEl.textContent = homepage.hero_headline;
-          }
-          if (homepage.hero_subtitle) {
-            const subEl = document.getElementById('heroSubtitleDisplay');
-            if (subEl) subEl.textContent = homepage.hero_subtitle;
-          }
-          if (homepage.hero_image_url) {
-            const imgEl = document.querySelector('.hero-image-img');
-            if (imgEl) imgEl.src = homepage.hero_image_url;
-          }
-          if (homepage.trust_indicator) {
-            const trustEl = document.getElementById('heroTrustText');
-            if (trustEl) trustEl.textContent = homepage.trust_indicator;
-          }
-          if (homepage.announcement_text && homepage.announcement_active === '1') {
-            const annBar = document.getElementById('announcementBar');
-            if (annBar) {
-              annBar.innerHTML = `📢 ${escapeHtml(homepage.announcement_text)}`;
-              annBar.style.display = 'block';
-            }
-          }
+        const filterBar = document.getElementById('productFilterBarContainer');
+        if (filterBar) {
+          filterBar.innerHTML = `<button class="filter-btn active" onclick="filterProducts('all', this)">All Items</button>` +
+            categories.slice(0, 5).map(c => `
+              <button class="filter-btn" onclick="filterProducts('cat_${c.id}', this)">${escapeHtml(c.name)}</button>
+            `).join('');
         }
+      }
 
-        // 3. Render Active Offers Banner
-        if (offers && offers.length > 0) {
-          const offerBanner = document.getElementById('activeOffersBanner');
-          if (offerBanner) {
-            const topOffer = offers[0];
-            offerBanner.innerHTML = `
-              <div style="background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #065f46 100%); color:#ffffff; padding:18px 24px; border-radius:16px; box-shadow: 0 8px 25px rgba(6, 78, 59, 0.25); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; border:1px solid rgba(255,255,255,0.15);">
-                <div>
-                  <span style="background:var(--secondary); color:#21032b; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:9999px; text-transform:uppercase;">${escapeHtml(topOffer.discount_tag || 'Special Offer')}</span>
-                  <h3 style="font-size:1.25rem; font-weight:800; color:#fff; margin:6px 0 2px;">${escapeHtml(topOffer.title)}</h3>
-                  <p style="font-size:0.88rem; color:#d1fae5; margin:0;">${escapeHtml(topOffer.description || '')}</p>
+      // 5. Render Dynamic Products
+      if (products && products.length > 0) {
+        const prodContainer = document.getElementById('productGridContainer');
+        if (prodContainer) {
+          prodContainer.innerHTML = products.map(p => {
+            const pKey = `dyn_${p.id}`;
+            productQuantities[pKey] = 1;
+
+            const isOutOfStock = !p.is_available;
+            const priceDisplay = p.offer_price
+              ? `<span class="product-price">₹${p.offer_price}</span> <span style="text-decoration:line-through; color:var(--text-subtle); font-size:0.85rem; margin-left:4px;">₹${p.price}</span>`
+              : `<span class="product-price">₹${p.price}</span>`;
+
+            return `
+              <article class="product-card" data-category="cat_${p.category_id}">
+                ${p.badge_text ? `<span class="product-badge ${p.is_featured ? 'gold' : ''}">${escapeHtml(p.badge_text)}</span>` : ''}
+                <div class="product-image-box">
+                  <img
+                    src="${escapeHtml(p.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80')}"
+                    alt="${escapeHtml(p.name)}"
+                    class="product-img"
+                    loading="lazy"
+                    onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80'"
+                  />
                 </div>
-                <a href="${getWhatsAppUrl('Hi Sri Murugan Store, I want to claim the offer: ' + topOffer.title)}" target="_blank" rel="noopener noreferrer" style="background:#25d366; color:#ffffff; padding:10px 20px; border-radius:8px; font-weight:800; font-size:0.88rem; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 12px rgba(37,211,102,0.35);">
-                  Claim on WhatsApp ➔
-                </a>
-              </div>
-            `;
-            offerBanner.style.display = 'block';
-          }
-        }
+                <div class="product-info">
+                  <span class="product-category-tag">${escapeHtml(p.category_name || 'Grocery')}</span>
+                  <h3 class="product-title">${escapeHtml(p.name)}</h3>
+                  ${p.tamil_name ? `<p class="product-tamil-name">${escapeHtml(p.tamil_name)}</p>` : ''}
 
-        // 4. Render Dynamic Categories
-        if (categories && categories.length > 0) {
-          const catContainer = document.getElementById('categoriesGridContainer');
-          if (catContainer) {
-            catContainer.innerHTML = categories.map(c => `
-              <div class="category-card" onclick="enquireCategory('${escapeJsString(c.name)}')">
-                <div class="category-icon-box">${c.icon || '📦'}</div>
-                <h3 class="category-name">${escapeHtml(c.name)}</h3>
-                <span class="category-subname">${escapeHtml(c.tamil_name || '')}</span>
-                <span class="category-count">Explore &amp; Order</span>
-              </div>
-            `).join('') + `
-              <div class="category-card" onclick="enquireCategory('General Grocery List')" style="background: var(--primary-light); border-color: var(--primary);">
-                <div class="category-icon-box" style="background: var(--primary); color: #ffffff;">📝</div>
-                <h3 class="category-name" style="color: var(--primary-dark);">Custom List</h3>
-                <span class="category-subname">உங்கள் மளிகை பட்டியல்</span>
-                <span class="category-count" style="background: var(--primary); color: #fff;">WhatsApp Us</span>
-              </div>
-            `;
-          }
-
-          // Build dynamic filter buttons
-          const filterBar = document.getElementById('productFilterBarContainer');
-          if (filterBar) {
-            filterBar.innerHTML = `<button class="filter-btn active" onclick="filterProducts('all', this)">All Items</button>` +
-              categories.slice(0, 5).map(c => `
-                <button class="filter-btn" onclick="filterProducts('cat_${c.id}', this)">${escapeHtml(c.name)}</button>
-              `).join('');
-          }
-        }
-
-        // 5. Render Dynamic Products
-        if (products && products.length > 0) {
-          const prodContainer = document.getElementById('productGridContainer');
-          if (prodContainer) {
-            prodContainer.innerHTML = products.map(p => {
-              const pKey = `dyn_${p.id}`;
-              productQuantities[pKey] = 1;
-
-              const isOutOfStock = !p.is_available;
-              const priceDisplay = p.offer_price
-                ? `<span class="product-price">₹${p.offer_price}</span> <span style="text-decoration:line-through; color:var(--text-subtle); font-size:0.85rem; margin-left:4px;">₹${p.price}</span>`
-                : `<span class="product-price">₹${p.price}</span>`;
-
-              return `
-                <article class="product-card" data-category="cat_${p.category_id}">
-                  ${p.badge_text ? `<span class="product-badge ${p.is_featured ? 'gold' : ''}">${escapeHtml(p.badge_text)}</span>` : ''}
-                  <div class="product-image-box">
-                    <img
-                      src="${escapeHtml(p.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80')}"
-                      alt="${escapeHtml(p.name)}"
-                      class="product-img"
-                      loading="lazy"
-                      onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80'"
-                    />
-                  </div>
-                  <div class="product-info">
-                    <span class="product-category-tag">${escapeHtml(p.category_name || 'Grocery')}</span>
-                    <h3 class="product-title">${escapeHtml(p.name)}</h3>
-                    ${p.tamil_name ? `<p class="product-tamil-name">${escapeHtml(p.tamil_name)}</p>` : ''}
-
-                    <div class="product-bottom-row">
-                      <div class="product-price-box">
-                        <div>${priceDisplay}</div>
-                        <span class="product-unit">per ${escapeHtml(p.unit || '1 kg')}</span>
-                      </div>
-                      ${!isOutOfStock ? `
-                        <div class="product-qty-stepper">
-                          <button class="qty-btn" onclick="adjustQty('${pKey}', -1)" aria-label="Decrease quantity">-</button>
-                          <span class="qty-display" id="qty-${pKey}">1</span>
-                          <button class="qty-btn" onclick="adjustQty('${pKey}', 1)" aria-label="Increase quantity">+</button>
-                        </div>
-                      ` : `
-                        <span class="status-pill danger" style="font-size:0.75rem; background:#fee2e2; color:#991b1b; padding:2px 8px; border-radius:4px; font-weight:700;">Out of Stock</span>
-                      `}
+                  <div class="product-bottom-row">
+                    <div class="product-price-box">
+                      <div>${priceDisplay}</div>
+                      <span class="product-unit">per ${escapeHtml(p.unit || '1 kg')}</span>
                     </div>
-
                     ${!isOutOfStock ? `
-                      <button
-                        class="btn-product-wa"
-                        onclick="orderProductOnWhatsApp('${escapeJsString(p.name)} (${escapeJsString(p.unit || '1 kg')})', '${pKey}')"
-                      >
-                        <span>Order on WhatsApp</span> 📲
-                      </button>
+                      <div class="product-qty-stepper">
+                        <button class="qty-btn" onclick="adjustQty('${pKey}', -1)" aria-label="Decrease quantity">-</button>
+                        <span class="qty-display" id="qty-${pKey}">1</span>
+                        <button class="qty-btn" onclick="adjustQty('${pKey}', 1)" aria-label="Increase quantity">+</button>
+                      </div>
                     ` : `
-                      <button
-                        class="btn-product-wa"
-                        style="opacity:0.65; cursor:pointer;"
-                        onclick="orderProductOnWhatsApp('Next Stock Enquiry for: ${escapeJsString(p.name)}', '${pKey}')"
-                      >
-                        <span>Enquire Next Stock</span> 📲
-                      </button>
+                      <span class="status-pill danger" style="font-size:0.75rem; background:#fee2e2; color:#991b1b; padding:2px 8px; border-radius:4px; font-weight:700;">Out of Stock</span>
                     `}
                   </div>
-                </article>
-              `;
-            }).join('');
+
+                  ${!isOutOfStock ? `
+                    <button
+                      class="btn-product-wa"
+                      onclick="orderProductOnWhatsApp('${escapeJsString(p.name)} (${escapeJsString(p.unit || '1 kg')})', '${pKey}')"
+                    >
+                      <span>Order on WhatsApp</span> 📲
+                    </button>
+                  ` : `
+                    <button
+                      class="btn-product-wa"
+                      style="opacity:0.65; cursor:pointer;"
+                      onclick="orderProductOnWhatsApp('Next Stock Enquiry for: ${escapeJsString(p.name)}', '${pKey}')"
+                    >
+                      <span>Enquire Next Stock</span> 📲
+                    </button>
+                  `}
+                </div>
+              </article>
+            `;
+          }).join('');
+        }
+      }
+    }
+
+    async function syncPublicWebsite() {
+      // 1. Instant hydration from LocalStorage (for GitHub Pages & offline speed)
+      try {
+        const raw = localStorage.getItem('sri_murugan_grocery_data');
+        if (raw) {
+          const localData = JSON.parse(raw);
+          applyStoreDataToDOM(localData);
+        }
+      } catch (err) {
+        console.warn('LocalStorage sync notice:', err);
+      }
+
+      // 2. Fetch live data from backend API if online
+      try {
+        const apiPath = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')
+          ? '/api/public/data'
+          : (window.location.pathname.includes('/test/') ? '/test/api/public/data' : '/api/public/data');
+
+        const res = await fetch(apiPath);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            applyStoreDataToDOM(json.data);
+            localStorage.setItem('sri_murugan_grocery_data', JSON.stringify(json.data));
           }
         }
       } catch (err) {
-        console.warn('Backend sync note: Running with static fallback.', err);
+        // Static GitHub Pages mode - running with cached store data
       }
     }
+
+    // Cross-tab real-time sync (when admin updates prices in another tab)
+    window.addEventListener('storage', () => {
+      try {
+        const raw = localStorage.getItem('sri_murugan_grocery_data');
+        if (raw) applyStoreDataToDOM(JSON.parse(raw));
+      } catch (e) {}
+    });
 
     function escapeHtml(str) {
       if (!str) return '';

@@ -1,84 +1,303 @@
 /**
  * ADMIN DASHBOARD JAVASCRIPT CONTROLLER
  * Sri Murugan Daily Fresh Grocery Store - Tiruppur
+ * Mode: Open Access (Full Administrative Privileges for All Visitors)
+ * Compatible with GitHub Pages (Static LocalStorage) & Node.js Backend Server
  */
 
-const API_BASE = '/api';
-let authToken = localStorage.getItem('grocery_admin_token');
-let currentAdmin = null;
+const API_BASE = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')
+  ? '/api'
+  : (window.location.pathname.includes('/test/') ? '/test/api' : '/api');
 
-// Global State
-let allProducts = [];
-let allCategories = [];
-let allOffers = [];
-let shopSettings = {};
-let homepageSettings = {};
-let allOrders = [];
+let isServerAvailable = false;
+let currentAdmin = {
+  username: 'Store Owner',
+  email: 'admin@srimurugan.com',
+  role: 'Administrator'
+};
 
 // ==============================================================================
-// 1. INITIALIZATION & AUTH CHECK
+// DEFAULT STORE DATA (Used as base & GitHub Pages fallback)
+// ==============================================================================
+const DEFAULT_DATA = {
+  shop: {
+    shop_name: 'Sri Murugan Daily Fresh',
+    tagline: "Tiruppur's Favourite Neighbourhood Grocery Store",
+    phone_display: '+91 98765 43210',
+    phone_raw: '+919876543210',
+    whatsapp_number: '919876543210',
+    address_line1: '142, Kumaran Road, Near Railway Station',
+    address_line2: 'Old Bus Stand Area, Tiruppur, Tamil Nadu - 641 601',
+    city: 'Tiruppur',
+    state: 'Tamil Nadu',
+    pincode: '641601',
+    timings: 'Open Every Day: 6:30 AM – 10:00 PM',
+    gmaps_url: 'https://maps.google.com/?q=Tiruppur+Tamil+Nadu+Kumaran+Road',
+    delivery_radius: 'Fast 30-45 Mins Delivery across PN Road, Avinashi Road, College Road & Kumaran Road',
+    min_order_amount: '200',
+    shop_description: 'Your trusted local neighbourhood grocery store and mini-supermarket in Tiruppur. Farm fresh vegetables, authentic Ponni rice, unpolished dals, and cold-pressed cooking oils with WhatsApp order delivery.'
+  },
+  homepage: {
+    hero_headline: 'Your Neighbourhood Grocery Store in Tiruppur',
+    hero_subtitle: 'Fresh groceries, everyday essentials, and quality products at affordable prices. Everything you need, just around the corner!',
+    hero_image_url: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80',
+    trust_indicator: 'Serving Your Neighbourhood in Tiruppur',
+    announcement_text: 'Free doorstep delivery in Tiruppur on orders above ₹500! Order via WhatsApp.',
+    announcement_active: '1'
+  },
+  categories: [
+    { id: 1, name: 'Fresh Vegetables', tamil_name: 'நாட்டு காய்கறிகள்', icon: '🥦', display_order: 1, is_active: 1 },
+    { id: 2, name: 'Fresh Fruits', tamil_name: 'புதிய பழங்கள்', icon: '🍎', display_order: 2, is_active: 1 },
+    { id: 3, name: 'Rice & Grains', tamil_name: 'அரிசி & தானியங்கள்', icon: '🌾', display_order: 3, is_active: 1 },
+    { id: 4, name: 'Dals & Pulses', tamil_name: 'பருப்பு வகைகள்', icon: '🥣', display_order: 4, is_active: 1 },
+    { id: 5, name: 'Cooking Oil', tamil_name: 'மரச்செக்கு எண்ணெய்', icon: '🛢️', display_order: 5, is_active: 1 },
+    { id: 6, name: 'Spices & Masalas', tamil_name: 'மசாலா & மளிகை', icon: '🌶️', display_order: 6, is_active: 1 },
+    { id: 7, name: 'Snacks & Biscuits', tamil_name: 'சிற்றுண்டிகள்', icon: '🍪', display_order: 7, is_active: 1 },
+    { id: 8, name: 'Dairy Products', tamil_name: 'பால் & தயிர்', icon: '🥛', display_order: 8, is_active: 1 },
+    { id: 9, name: 'Beverages', tamil_name: 'டீ, காபி & பானங்கள்', icon: '☕', display_order: 9, is_active: 1 },
+    { id: 10, name: 'Household Essentials', tamil_name: 'வீட்டு உபயோக பொருட்கள்', icon: '🧼', display_order: 10, is_active: 1 },
+    { id: 11, name: 'Personal Care', tamil_name: 'சுய பராமரிப்பு', icon: '🧴', display_order: 11, is_active: 1 }
+  ],
+  products: [
+    {
+      id: 1,
+      name: 'BPT Deluxe Ponni Rice',
+      tamil_name: 'முதல் தரம் பொன்னி புழுங்கல் அரிசி',
+      category_id: 3,
+      price: 360,
+      offer_price: 340,
+      unit: '5 kg bag',
+      image_url: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80',
+      description: 'Aged, well-milled deluxe Ponni boiled rice, soft texture for daily meals.',
+      badge_text: 'Best Seller',
+      is_available: 1,
+      is_published: 1,
+      is_featured: 1
+    },
+    {
+      id: 2,
+      name: 'Country Tomatoes',
+      tamil_name: 'நாட்டு தக்காளி (பண்ணை வரத்து)',
+      category_id: 1,
+      price: 45,
+      offer_price: 38,
+      unit: '1 kg',
+      image_url: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80',
+      description: 'Direct harvest farm fresh sour-sweet country tomatoes.',
+      badge_text: 'Farm Fresh',
+      is_available: 1,
+      is_published: 1,
+      is_featured: 1
+    },
+    {
+      id: 3,
+      name: 'First Quality Toor Dal',
+      tamil_name: 'முதல் தரம் துவரம் பருப்பு',
+      category_id: 4,
+      price: 170,
+      offer_price: 155,
+      unit: '1 kg',
+      image_url: 'https://images.unsplash.com/photo-1585994192701-f1a505c817ea?auto=format&fit=crop&w=600&q=80',
+      description: 'Unpolished, pesticide-free yellow split toor dal with rich aroma.',
+      badge_text: 'Unpolished',
+      is_available: 1,
+      is_published: 1,
+      is_featured: 1
+    },
+    {
+      id: 4,
+      name: 'Cold-Pressed Groundnut Oil',
+      tamil_name: 'மரச்செக்கு கடலை எண்ணெய்',
+      category_id: 5,
+      price: 230,
+      offer_price: 210,
+      unit: '1 Litre',
+      image_url: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80',
+      description: 'Authentic wooden-churned (Marachekku) cold pressed Kadalai Ennai.',
+      badge_text: 'Traditional',
+      is_available: 1,
+      is_published: 1,
+      is_featured: 1
+    },
+    {
+      id: 5,
+      name: 'Small Sambar Onions',
+      tamil_name: 'நாட்டு சின்ன வெங்காயம்',
+      category_id: 1,
+      price: 75,
+      offer_price: 65,
+      unit: '1 kg',
+      image_url: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=600&q=80',
+      description: 'Fresh pink small shallots essential for Tamil Nadu sambar & rasam.',
+      badge_text: 'Daily Staple',
+      is_available: 1,
+      is_published: 1,
+      is_featured: 1
+    },
+    {
+      id: 6,
+      name: 'Aavin Fresh Milk (Blue)',
+      tamil_name: 'ஆவின் பசும்பால் (பாக்கெட்)',
+      category_id: 8,
+      price: 22,
+      offer_price: 22,
+      unit: '500 ml',
+      image_url: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=600&q=80',
+      description: 'Pasteurized homogenized toned milk delivered fresh every morning.',
+      badge_text: 'Daily 6:30 AM',
+      is_available: 1,
+      is_published: 1,
+      is_featured: 1
+    },
+    {
+      id: 7,
+      name: 'Traditional Sambar Masala',
+      tamil_name: 'நாட்டு சாம்பார் பொடி (200g)',
+      category_id: 6,
+      price: 58,
+      offer_price: 52,
+      unit: '200g pack',
+      image_url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80',
+      description: 'Authentic village style slow roasted coriander, cumin and red chilli blend.',
+      badge_text: 'Pure Spices',
+      is_available: 1,
+      is_published: 1,
+      is_featured: 0
+    },
+    {
+      id: 8,
+      name: 'Degree Filter Coffee Powder',
+      tamil_name: 'கும்பகோணம் டிகிரி காபி தூள் (80:20)',
+      category_id: 9,
+      price: 145,
+      offer_price: 130,
+      unit: '250g pack',
+      image_url: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80',
+      description: '80% Plantation A coffee and 20% high grade chicory for golden decoction.',
+      badge_text: 'South Indian Classic',
+      is_available: 1,
+      is_published: 1,
+      is_featured: 0
+    }
+  ],
+  offers: [
+    {
+      id: 1,
+      title: 'Special Monthly Grocery Festival',
+      description: 'Flat 10% off on all Marachekku Cold-Pressed Cooking Oils and 25kg Ponni Rice bags this week in Tiruppur!',
+      banner_url: 'https://images.unsplash.com/photo-1607349913338-fca6f7fc42d0?auto=format&fit=crop&w=1000&q=80',
+      discount_tag: 'FLAT 10% OFF',
+      code: 'TIRUPPUR10',
+      start_date: '2026-11-01',
+      end_date: '2026-11-30',
+      is_active: 1
+    }
+  ],
+  orders: [
+    {
+      id: 101,
+      customer_name: 'Venkatesh R.',
+      customer_phone: '9876543210',
+      delivery_address: 'PN Road, Tiruppur',
+      items: [
+        { name: 'BPT Deluxe Ponni Rice (5 kg)', qty: 1, price: 340 },
+        { name: 'Country Tomatoes (1 kg)', qty: 2, price: 38 }
+      ],
+      total_amount: 416,
+      payment_method: 'Google Pay',
+      status: 'confirmed',
+      created_at: new Date().toISOString()
+    }
+  ]
+};
+
+// ==============================================================================
+// LOCAL STORAGE DATA LAYER
+// ==============================================================================
+function getLocalData() {
+  const raw = localStorage.getItem('sri_murugan_grocery_data');
+  if (!raw) {
+    saveLocalData(DEFAULT_DATA);
+    return JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    saveLocalData(DEFAULT_DATA);
+    return JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+}
+
+function saveLocalData(data) {
+  localStorage.setItem('sri_murugan_grocery_data', JSON.stringify(data));
+  // Broadcast update event so index.html syncs immediately in other tabs
+  window.dispatchEvent(new Event('storage'));
+}
+
+// Global In-Memory Working State
+let storeData = getLocalData();
+let allProducts = storeData.products || [];
+let allCategories = storeData.categories || [];
+let allOffers = storeData.offers || [];
+let allOrders = storeData.orders || [];
+
+// ==============================================================================
+// 1. INITIALIZATION & OPEN ACCESS
 // ==============================================================================
 document.addEventListener('DOMContentLoaded', async () => {
-  if (!authToken) {
-    window.location.href = '/admin/login.html';
-    return;
-  }
-
-  // Verify token
+  // Check if live server is reachable
   try {
-    const res = await apiFetch('/auth/me');
-    if (!res.success) {
-      logout();
-      return;
+    const res = await fetch(`${API_BASE}/public/data`);
+    if (res.ok) {
+      const serverData = await res.json();
+      if (serverData.success && serverData.data) {
+        isServerAvailable = true;
+        // Merge server data with local working state
+        if (serverData.data.products && serverData.data.products.length > 0) {
+          storeData.products = serverData.data.products;
+          storeData.categories = serverData.data.categories;
+          storeData.offers = serverData.data.offers;
+          storeData.shop = { ...storeData.shop, ...serverData.data.shop };
+          storeData.homepage = { ...storeData.homepage, ...serverData.data.homepage };
+          saveLocalData(storeData);
+        }
+      }
     }
-    currentAdmin = res.admin;
-    document.getElementById('adminUserNameDisplay').textContent = currentAdmin.username || 'Admin';
-    document.getElementById('adminUserEmailDisplay').textContent = currentAdmin.email || '';
-    document.getElementById('adminAvatarInitial').textContent = (currentAdmin.username || 'A')[0].toUpperCase();
   } catch (err) {
-    logout();
-    return;
+    isServerAvailable = false;
   }
 
-  // Load initial view
+  // Reload working state
+  storeData = getLocalData();
+  allProducts = storeData.products || [];
+  allCategories = storeData.categories || [];
+  allOffers = storeData.offers || [];
+  allOrders = storeData.orders || [];
+
+  // Update Admin Info Badge in Sidebar (Open Access)
+  const nameEl = document.getElementById('adminUserNameDisplay');
+  const emailEl = document.getElementById('adminUserEmailDisplay');
+  const avatarEl = document.getElementById('adminAvatarInitial');
+
+  if (nameEl) nameEl.textContent = 'Store Owner (Open Access)';
+  if (emailEl) emailEl.textContent = isServerAvailable ? '⚡ Connected to Live Server' : '🟢 Active on GitHub Pages (Instant Sync)';
+  if (avatarEl) avatarEl.textContent = '👑';
+
+  // Add Open Access status pill in topbar
+  const topbarRight = document.querySelector('.topbar-right');
+  if (topbarRight && !document.getElementById('openAccessBadge')) {
+    const badge = document.createElement('span');
+    badge.id = 'openAccessBadge';
+    badge.className = 'status-pill success';
+    badge.style.fontSize = '0.78rem';
+    badge.style.padding = '5px 12px';
+    badge.innerHTML = '🔓 <strong>Full Access Enabled</strong>';
+    topbarRight.insertBefore(badge, topbarRight.firstChild);
+  }
+
   initNavigation();
   loadOverviewData();
 });
-
-// Wrapper for Authenticated API requests
-async function apiFetch(endpoint, options = {}) {
-  const headers = options.headers || {};
-  if (authToken) {
-    headers['Authorization'] = `Bearer ${authToken}`;
-  }
-  if (!(options.body instanceof FormData) && !headers['Content-Type']) {
-    headers['Content-Type'] = 'application/json';
-  }
-
-  const response = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
-    headers
-  });
-
-  if (response.status === 401) {
-    logout();
-    throw new Error('Unauthorized');
-  }
-
-  return response.json();
-}
-
-function logout() {
-  if (authToken) {
-    fetch(`${API_BASE}/auth/logout`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${authToken}` }
-    }).catch(() => {});
-  }
-  localStorage.removeItem('grocery_admin_token');
-  localStorage.removeItem('grocery_admin_user');
-  window.location.href = '/admin/login.html';
-}
 
 // ==============================================================================
 // 2. NAVIGATION & TABS
@@ -92,7 +311,6 @@ function initNavigation() {
     });
   });
 
-  // Mobile drawer toggle
   const toggleBtn = document.getElementById('sidebarToggleBtn');
   const sidebar = document.getElementById('adminSidebar');
   if (toggleBtn && sidebar) {
@@ -103,7 +321,6 @@ function initNavigation() {
 }
 
 function switchView(viewName) {
-  // Update nav buttons
   document.querySelectorAll('.nav-item-btn[data-view]').forEach(btn => {
     if (btn.getAttribute('data-view') === viewName) {
       btn.classList.add('active');
@@ -112,7 +329,6 @@ function switchView(viewName) {
     }
   });
 
-  // Update view containers
   document.querySelectorAll('.view-section').forEach(sec => {
     sec.classList.remove('is-active');
   });
@@ -122,7 +338,6 @@ function switchView(viewName) {
     activeSec.classList.add('is-active');
   }
 
-  // Update Page Title
   const titles = {
     overview: 'Dashboard Overview',
     products: 'Product Management',
@@ -133,13 +348,12 @@ function switchView(viewName) {
     homepage: 'Website Homepage Editor',
     orders: 'Customer Orders & WhatsApp'
   };
-  document.getElementById('currentPageTitle').textContent = titles[viewName] || 'Dashboard';
+  const titleEl = document.getElementById('currentPageTitle');
+  if (titleEl) titleEl.textContent = titles[viewName] || 'Dashboard';
 
-  // Close mobile sidebar if open
   const sidebar = document.getElementById('adminSidebar');
   if (sidebar) sidebar.classList.remove('is-open');
 
-  // Trigger data loader for the view
   if (viewName === 'overview') loadOverviewData();
   else if (viewName === 'products') loadProducts();
   else if (viewName === 'bulk-prices') loadBulkPriceTable();
@@ -150,33 +364,53 @@ function switchView(viewName) {
   else if (viewName === 'orders') loadOrders();
 }
 
+function logout() {
+  showToast('Logged out. Re-authorizing open access...', 'info');
+  setTimeout(() => {
+    window.location.reload();
+  }, 600);
+}
+
 // ==============================================================================
 // 3. OVERVIEW VIEW
 // ==============================================================================
-async function loadOverviewData() {
-  try {
-    const data = await apiFetch('/admin/overview');
-    if (!data.success) return;
+function loadOverviewData() {
+  storeData = getLocalData();
+  allProducts = storeData.products || [];
+  allCategories = storeData.categories || [];
+  allOffers = storeData.offers || [];
+  allOrders = storeData.orders || [];
 
-    const s = data.stats;
-    document.getElementById('statTotalProducts').textContent = s.totalProducts || 0;
-    document.getElementById('statActiveProducts').textContent = s.activeProducts || 0;
-    document.getElementById('statOutOfStock').textContent = s.outOfStock || 0;
-    document.getElementById('statCategories').textContent = s.totalCategories || 0;
-    document.getElementById('statActiveOffers').textContent = s.activeOffers || 0;
-    document.getElementById('statTotalOrders').textContent = s.totalOrders || 0;
+  const totalProducts = allProducts.length;
+  const activeProducts = allProducts.filter(p => p.is_available && p.is_published).length;
+  const outOfStock = allProducts.filter(p => !p.is_available).length;
+  const totalCategories = allCategories.filter(c => c.is_active).length;
+  const activeOffers = allOffers.filter(o => o.is_active).length;
+  const totalOrders = allOrders.length;
 
-    // Render Recent Products table
-    const tbody = document.getElementById('recentProductsTableBody');
-    if (tbody && data.recentProducts) {
-      if (data.recentProducts.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px; color: #94a3b8;">No products found.</td></tr>';
-      } else {
-        tbody.innerHTML = data.recentProducts.map(p => `
+  document.getElementById('statTotalProducts').textContent = totalProducts;
+  document.getElementById('statActiveProducts').textContent = activeProducts;
+  document.getElementById('statOutOfStock').textContent = outOfStock;
+  document.getElementById('statCategories').textContent = totalCategories;
+  document.getElementById('statActiveOffers').textContent = activeOffers;
+  document.getElementById('statTotalOrders').textContent = totalOrders;
+
+  const tbody = document.getElementById('recentProductsTableBody');
+  if (tbody) {
+    const recent = allProducts.slice(0, 6);
+    if (recent.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px; color: #94a3b8;">No products found.</td></tr>';
+    } else {
+      tbody.innerHTML = recent.map(p => {
+        const cat = allCategories.find(c => c.id == p.category_id);
+        return `
           <tr>
             <td><strong>${escapeHtml(p.name)}</strong></td>
-            <td>${escapeHtml(p.category_name || 'Uncategorized')}</td>
-            <td>₹${p.offer_price ? `<span style="text-decoration:line-through; color:#94a3b8; font-size:0.8rem;">₹${p.price}</span> ₹${p.offer_price}` : p.price} <span style="font-size:0.75rem; color:#64748b;">/${escapeHtml(p.unit)}</span></td>
+            <td>${escapeHtml(cat ? cat.name : 'Staples')}</td>
+            <td>
+              ${p.offer_price ? `<span style="text-decoration:line-through; color:#94a3b8; font-size:0.8rem;">₹${p.price}</span> ₹${p.offer_price}` : `₹${p.price}`}
+              <span style="font-size:0.75rem; color:#64748b;">/${escapeHtml(p.unit || '1 kg')}</span>
+            </td>
             <td>
               ${p.is_available ? '<span class="status-pill success">In Stock</span>' : '<span class="status-pill danger">Out of Stock</span>'}
             </td>
@@ -184,41 +418,58 @@ async function loadOverviewData() {
               <button class="btn btn-sm btn-secondary" onclick="editProductById(${p.id})">Edit</button>
             </td>
           </tr>
-        `).join('');
-      }
+        `;
+      }).join('');
     }
-  } catch (err) {
-    showToast('Failed to load overview data.', 'error');
   }
 }
 
 // ==============================================================================
 // 4. PRODUCT MANAGEMENT VIEW
 // ==============================================================================
-async function loadProducts() {
-  const search = document.getElementById('prodSearchInput')?.value || '';
+function loadProducts() {
+  populateCategoryDropdowns();
+  storeData = getLocalData();
+  allProducts = storeData.products || [];
+
+  const search = (document.getElementById('prodSearchInput')?.value || '').toLowerCase().trim();
   const cat = document.getElementById('prodCategoryFilter')?.value || '';
   const status = document.getElementById('prodStatusFilter')?.value || '';
   const sort = document.getElementById('prodSortSelect')?.value || '';
 
-  const params = new URLSearchParams();
-  if (search) params.append('search', search);
-  if (cat) params.append('category_id', cat);
-  if (status) params.append('status', status);
-  if (sort) params.append('sort', sort);
+  let filtered = [...allProducts];
 
-  try {
-    // Also refresh categories for the filter dropdown
-    await populateCategoryDropdowns();
-
-    const data = await apiFetch(`/admin/products?${params.toString()}`);
-    if (!data.success) return;
-
-    allProducts = data.products || [];
-    renderProductsTable(allProducts);
-  } catch (err) {
-    showToast('Failed to load products.', 'error');
+  if (search) {
+    filtered = filtered.filter(p =>
+      (p.name && p.name.toLowerCase().includes(search)) ||
+      (p.tamil_name && p.tamil_name.toLowerCase().includes(search)) ||
+      (p.description && p.description.toLowerCase().includes(search))
+    );
   }
+
+  if (cat) {
+    filtered = filtered.filter(p => String(p.category_id) === String(cat));
+  }
+
+  if (status === 'available') {
+    filtered = filtered.filter(p => p.is_available);
+  } else if (status === 'out_of_stock') {
+    filtered = filtered.filter(p => !p.is_available);
+  } else if (status === 'unpublished') {
+    filtered = filtered.filter(p => !p.is_published);
+  }
+
+  if (sort === 'price_asc') {
+    filtered.sort((a, b) => Number(a.price) - Number(b.price));
+  } else if (sort === 'price_desc') {
+    filtered.sort((a, b) => Number(b.price) - Number(a.price));
+  } else if (sort === 'name_asc') {
+    filtered.sort((a, b) => a.name.localeCompare(b.name));
+  } else {
+    filtered.reverse();
+  }
+
+  renderProductsTable(filtered);
 }
 
 function renderProductsTable(products) {
@@ -230,52 +481,52 @@ function renderProductsTable(products) {
     return;
   }
 
-  tbody.innerHTML = products.map(p => `
-    <tr>
-      <td>
-        <img
-          src="${escapeHtml(p.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=100&q=80')}"
-          alt="${escapeHtml(p.name)}"
-          class="table-thumbnail"
-          onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=100&q=80'"
-        />
-      </td>
-      <td>
-        <strong>${escapeHtml(p.name)}</strong>
-        ${p.tamil_name ? `<div style="font-size:0.75rem; color:#64748b;">${escapeHtml(p.tamil_name)}</div>` : ''}
-        ${p.badge_text ? `<span style="font-size:0.7rem; background:#fef3c7; color:#92400e; padding:1px 6px; border-radius:4px; font-weight:700;">${escapeHtml(p.badge_text)}</span>` : ''}
-      </td>
-      <td><span style="font-size:0.85rem; color:#334155; font-weight:600;">${escapeHtml(p.category_name || 'Uncategorized')}</span></td>
-      <td>
-        <div style="font-weight:700; color:#0f172a;">
-          ${p.offer_price ? `₹${p.offer_price} <span style="text-decoration:line-through; color:#94a3b8; font-size:0.75rem;">₹${p.price}</span>` : `₹${p.price}`}
-        </div>
-        <div style="font-size:0.75rem; color:#64748b;">per ${escapeHtml(p.unit)}</div>
-      </td>
-      <td>
-        ${p.is_available ? '<span class="status-pill success">In Stock</span>' : '<span class="status-pill danger">Out of Stock</span>'}
-      </td>
-      <td>
-        ${p.is_published ? '<span class="status-pill success">Visible</span>' : '<span class="status-pill neutral">Hidden</span>'}
-        ${p.is_featured ? '<span class="status-pill warning" style="margin-left:4px;">★ Featured</span>' : ''}
-      </td>
-      <td>
-        <div style="display:flex; gap:6px;">
-          <button class="action-icon-btn" onclick="editProductById(${p.id})" title="Edit Product">✏️</button>
-          <button class="action-icon-btn danger" onclick="confirmDeleteProduct(${p.id}, '${escapeJsString(p.name)}')" title="Delete Product">🗑️</button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = products.map(p => {
+    const cat = allCategories.find(c => String(c.id) === String(p.category_id));
+    return `
+      <tr>
+        <td>
+          <img
+            src="${escapeHtml(p.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=100&q=80')}"
+            alt="${escapeHtml(p.name)}"
+            class="table-thumbnail"
+            onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=100&q=80'"
+          />
+        </td>
+        <td>
+          <strong>${escapeHtml(p.name)}</strong>
+          ${p.tamil_name ? `<div style="font-size:0.75rem; color:#64748b;">${escapeHtml(p.tamil_name)}</div>` : ''}
+          ${p.badge_text ? `<span style="font-size:0.7rem; background:#fef3c7; color:#92400e; padding:1px 6px; border-radius:4px; font-weight:700;">${escapeHtml(p.badge_text)}</span>` : ''}
+        </td>
+        <td><span style="font-size:0.85rem; color:#334155; font-weight:600;">${escapeHtml(cat ? cat.name : 'Staples')}</span></td>
+        <td>
+          <div style="font-weight:700; color:#0f172a;">
+            ${p.offer_price ? `₹${p.offer_price} <span style="text-decoration:line-through; color:#94a3b8; font-size:0.75rem;">₹${p.price}</span>` : `₹${p.price}`}
+          </div>
+          <div style="font-size:0.75rem; color:#64748b;">per ${escapeHtml(p.unit || '1 kg')}</div>
+        </td>
+        <td>
+          ${p.is_available ? '<span class="status-pill success">In Stock</span>' : '<span class="status-pill danger">Out of Stock</span>'}
+        </td>
+        <td>
+          ${p.is_published ? '<span class="status-pill success">Visible</span>' : '<span class="status-pill neutral">Hidden</span>'}
+          ${p.is_featured ? '<span class="status-pill warning" style="margin-left:4px;">★ Featured</span>' : ''}
+        </td>
+        <td>
+          <div style="display:flex; gap:6px;">
+            <button class="action-icon-btn" onclick="editProductById(${p.id})" title="Edit Product">✏️</button>
+            <button class="action-icon-btn danger" onclick="confirmDeleteProduct(${p.id}, '${escapeJsString(p.name)}')" title="Delete Product">🗑️</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
-async function populateCategoryDropdowns() {
-  if (allCategories.length === 0) {
-    const res = await apiFetch('/admin/categories');
-    if (res.success) allCategories = res.categories || [];
-  }
+function populateCategoryDropdowns() {
+  storeData = getLocalData();
+  allCategories = storeData.categories || [];
 
-  // Populate Filter Dropdown
   const filterSelect = document.getElementById('prodCategoryFilter');
   if (filterSelect) {
     const currentVal = filterSelect.value;
@@ -284,7 +535,6 @@ async function populateCategoryDropdowns() {
     filterSelect.value = currentVal;
   }
 
-  // Populate Modal Dropdown
   const modalSelect = document.getElementById('modalProdCategory');
   if (modalSelect) {
     modalSelect.innerHTML = '<option value="">Select a Category</option>' +
@@ -292,7 +542,6 @@ async function populateCategoryDropdowns() {
   }
 }
 
-// Open Add/Edit Product Modal
 function openAddProductModal() {
   document.getElementById('productModalTitle').textContent = 'Add New Grocery Product';
   document.getElementById('modalProductId').value = '';
@@ -314,7 +563,8 @@ function openAddProductModal() {
 }
 
 function editProductById(id) {
-  const p = allProducts.find(item => item.id == id);
+  storeData = getLocalData();
+  const p = (storeData.products || []).find(item => String(item.id) === String(id));
   if (!p) return;
 
   document.getElementById('productModalTitle').textContent = 'Edit Product';
@@ -343,61 +593,67 @@ function editProductById(id) {
   openModal('productModal');
 }
 
-async function saveProductForm(e) {
+function saveProductForm(e) {
   e.preventDefault();
+  storeData = getLocalData();
   const id = document.getElementById('modalProductId').value;
-  const payload = {
+
+  const productData = {
+    id: id ? Number(id) : Date.now(),
     name: document.getElementById('modalProdName').value.trim(),
     tamil_name: document.getElementById('modalProdTamilName').value.trim(),
-    category_id: document.getElementById('modalProdCategory').value || null,
-    price: document.getElementById('modalProdPrice').value,
-    offer_price: document.getElementById('modalProdOfferPrice').value || null,
+    category_id: Number(document.getElementById('modalProdCategory').value) || 1,
+    price: Number(document.getElementById('modalProdPrice').value),
+    offer_price: document.getElementById('modalProdOfferPrice').value ? Number(document.getElementById('modalProdOfferPrice').value) : null,
     unit: document.getElementById('modalProdUnit').value.trim(),
-    image_url: document.getElementById('modalProdImage').value.trim(),
+    image_url: document.getElementById('modalProdImage').value.trim() || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80',
     description: document.getElementById('modalProdDescription').value.trim(),
     badge_text: document.getElementById('modalProdBadge').value.trim(),
-    is_available: document.getElementById('modalProdAvailable').checked,
-    is_published: document.getElementById('modalProdPublished').checked,
-    is_featured: document.getElementById('modalProdFeatured').checked
+    is_available: document.getElementById('modalProdAvailable').checked ? 1 : 0,
+    is_published: document.getElementById('modalProdPublished').checked ? 1 : 0,
+    is_featured: document.getElementById('modalProdFeatured').checked ? 1 : 0,
+    updated_at: new Date().toISOString()
   };
 
-  const isEdit = !!id;
-  const endpoint = isEdit ? `/admin/products/${id}` : '/admin/products';
-  const method = isEdit ? 'PUT' : 'POST';
-
-  try {
-    const res = await apiFetch(endpoint, {
-      method,
-      body: JSON.stringify(payload)
-    });
-
-    if (res.success) {
-      showToast(isEdit ? 'Product updated successfully!' : 'Product added successfully!', 'success');
-      closeModal('productModal');
-      loadProducts();
-    } else {
-      showToast(res.error || 'Failed to save product.', 'error');
+  if (id) {
+    const idx = storeData.products.findIndex(p => String(p.id) === String(id));
+    if (idx !== -1) {
+      storeData.products[idx] = productData;
     }
-  } catch (err) {
-    showToast('Server error while saving product.', 'error');
+  } else {
+    storeData.products.unshift(productData);
+  }
+
+  saveLocalData(storeData);
+  showToast(id ? 'Product updated successfully!' : 'Product added successfully!', 'success');
+  closeModal('productModal');
+  loadProducts();
+
+  // Also sync to backend if online
+  if (isServerAvailable) {
+    const method = id ? 'PUT' : 'POST';
+    const path = id ? `${API_BASE}/admin/products/${id}` : `${API_BASE}/admin/products`;
+    fetch(path, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(productData)
+    }).catch(() => {});
   }
 }
 
 function confirmDeleteProduct(id, name) {
   showConfirm(
     'Delete Product',
-    `Are you sure you want to delete <strong>${escapeHtml(name)}</strong>? This will permanently remove it from the store.`,
-    async () => {
-      try {
-        const res = await apiFetch(`/admin/products/${id}`, { method: 'DELETE' });
-        if (res.success) {
-          showToast('Product deleted.', 'info');
-          loadProducts();
-        } else {
-          showToast(res.error || 'Failed to delete product.', 'error');
-        }
-      } catch (err) {
-        showToast('Error deleting product.', 'error');
+    `Are you sure you want to delete <strong>${escapeHtml(name)}</strong>? This will remove it from the store.`,
+    () => {
+      storeData = getLocalData();
+      storeData.products = (storeData.products || []).filter(p => String(p.id) !== String(id));
+      saveLocalData(storeData);
+      showToast('Product deleted.', 'info');
+      loadProducts();
+
+      if (isServerAvailable) {
+        fetch(`${API_BASE}/admin/products/${id}`, { method: 'DELETE' }).catch(() => {});
       }
     }
   );
@@ -408,31 +664,22 @@ function confirmDeleteProduct(id, name) {
 // ==============================================================================
 let bulkOriginalPrices = {};
 
-async function loadBulkPriceTable() {
-  try {
-    const data = await apiFetch('/admin/products');
-    if (!data.success) return;
+function loadBulkPriceTable() {
+  storeData = getLocalData();
+  allProducts = storeData.products || [];
+  bulkOriginalPrices = {};
 
-    allProducts = data.products || [];
-    bulkOriginalPrices = {};
-    allProducts.forEach(p => {
-      bulkOriginalPrices[p.id] = {
-        price: Number(p.price),
-        offer_price: p.offer_price ? Number(p.offer_price) : null
-      };
-    });
+  allProducts.forEach(p => {
+    bulkOriginalPrices[p.id] = {
+      price: Number(p.price),
+      offer_price: p.offer_price !== null && p.offer_price !== undefined ? Number(p.offer_price) : null
+    };
+  });
 
-    renderBulkPriceTable(allProducts);
-  } catch (err) {
-    showToast('Failed to load products for bulk editing.', 'error');
-  }
-}
-
-function renderBulkPriceTable(products) {
   const tbody = document.getElementById('bulkPriceTableBody');
   if (!tbody) return;
 
-  tbody.innerHTML = products.map(p => `
+  tbody.innerHTML = allProducts.map(p => `
     <tr data-bulk-id="${p.id}">
       <td>
         <img
@@ -444,9 +691,8 @@ function renderBulkPriceTable(products) {
       </td>
       <td>
         <strong>${escapeHtml(p.name)}</strong>
-        <div style="font-size:0.74rem; color:#64748b;">${escapeHtml(p.category_name || '')}</div>
       </td>
-      <td><span style="font-size:0.82rem; font-weight:600;">per ${escapeHtml(p.unit)}</span></td>
+      <td><span style="font-size:0.82rem; font-weight:600;">per ${escapeHtml(p.unit || '1 kg')}</span></td>
       <td>
         <span style="font-weight:700;">₹${p.price}</span>
       </td>
@@ -488,7 +734,7 @@ function handleSaveBulkPrices() {
 
   rows.forEach(r => {
     const id = r.getAttribute('data-bulk-id');
-    const p = allProducts.find(item => item.id == id);
+    const p = allProducts.find(item => String(item.id) === String(id));
     const regInp = r.querySelector('.bulk-reg-price');
     const offerInp = r.querySelector('.bulk-offer-price');
 
@@ -496,7 +742,7 @@ function handleSaveBulkPrices() {
     const newOffer = offerInp.value.trim() !== '' ? parseFloat(offerInp.value) : null;
     const orig = bulkOriginalPrices[id];
 
-    if (newReg !== orig.price || newOffer !== orig.offer_price) {
+    if (orig && (newReg !== orig.price || newOffer !== orig.offer_price)) {
       updates.push({ id, price: newReg, offer_price: newOffer });
       changedList.push(`• <strong>${escapeHtml(p.name)}</strong>: Reg ₹${orig.price} → ₹${newReg}${newOffer !== orig.offer_price ? ` | Offer: ${newOffer ? '₹' + newOffer : 'None'}` : ''}`);
     }
@@ -514,65 +760,66 @@ function handleSaveBulkPrices() {
        ${changedList.join('<br/>')}
      </div><br/>
      These prices will immediately show on the public landing page. Proceed?`,
-    async () => {
-      try {
-        const res = await apiFetch('/admin/products/bulk-prices', {
-          method: 'POST',
-          body: JSON.stringify({ updates })
-        });
-
-        if (res.success) {
-          showToast(res.message || 'Prices published live!', 'success');
-          loadBulkPriceTable();
-        } else {
-          showToast(res.error || 'Failed to update prices.', 'error');
+    () => {
+      storeData = getLocalData();
+      updates.forEach(u => {
+        const prod = storeData.products.find(p => String(p.id) === String(u.id));
+        if (prod) {
+          prod.price = u.price;
+          prod.offer_price = u.offer_price;
+          prod.updated_at = new Date().toISOString();
         }
-      } catch (err) {
-        showToast('Server error while saving prices.', 'error');
+      });
+
+      saveLocalData(storeData);
+      showToast('Prices published live to the website!', 'success');
+      loadBulkPriceTable();
+
+      if (isServerAvailable) {
+        fetch(`${API_BASE}/admin/products/bulk-prices`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ updates })
+        }).catch(() => {});
       }
     }
   );
 }
 
 // ==============================================================================
-// 6. CATEGORY MANAGEMENT (Section 6)
+// 6. CATEGORY MANAGEMENT
 // ==============================================================================
-async function loadCategories() {
-  try {
-    const res = await apiFetch('/admin/categories');
-    if (!res.success) return;
+function loadCategories() {
+  storeData = getLocalData();
+  allCategories = storeData.categories || [];
+  allProducts = storeData.products || [];
 
-    allCategories = res.categories || [];
-    renderCategoriesTable(allCategories);
-  } catch (err) {
-    showToast('Failed to load categories.', 'error');
-  }
-}
-
-function renderCategoriesTable(categories) {
   const tbody = document.getElementById('categoriesTableBody');
   if (!tbody) return;
 
-  tbody.innerHTML = categories.map(c => `
-    <tr>
-      <td style="font-size:1.4rem;">${c.icon || '📦'}</td>
-      <td>
-        <strong>${escapeHtml(c.name)}</strong>
-        ${c.tamil_name ? `<div style="font-size:0.75rem; color:#64748b;">${escapeHtml(c.tamil_name)}</div>` : ''}
-      </td>
-      <td><span style="font-weight:700; color:#0f172a;">${c.product_count || 0} items</span></td>
-      <td><span style="font-size:0.85rem; color:#64748b;">${c.display_order || 0}</span></td>
-      <td>
-        ${c.is_active ? '<span class="status-pill success">Active</span>' : '<span class="status-pill neutral">Disabled</span>'}
-      </td>
-      <td>
-        <div style="display:flex; gap:6px;">
-          <button class="action-icon-btn" onclick="editCategoryById(${c.id})" title="Edit Category">✏️</button>
-          <button class="action-icon-btn danger" onclick="confirmDeleteCategory(${c.id}, '${escapeJsString(c.name)}', ${c.product_count || 0})" title="Delete Category">🗑️</button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = allCategories.map(c => {
+    const productCount = allProducts.filter(p => String(p.category_id) === String(c.id)).length;
+    return `
+      <tr>
+        <td style="font-size:1.4rem;">${c.icon || '📦'}</td>
+        <td>
+          <strong>${escapeHtml(c.name)}</strong>
+          ${c.tamil_name ? `<div style="font-size:0.75rem; color:#64748b;">${escapeHtml(c.tamil_name)}</div>` : ''}
+        </td>
+        <td><span style="font-weight:700; color:#0f172a;">${productCount} items</span></td>
+        <td><span style="font-size:0.85rem; color:#64748b;">${c.display_order || 0}</span></td>
+        <td>
+          ${c.is_active ? '<span class="status-pill success">Active</span>' : '<span class="status-pill neutral">Disabled</span>'}
+        </td>
+        <td>
+          <div style="display:flex; gap:6px;">
+            <button class="action-icon-btn" onclick="editCategoryById(${c.id})" title="Edit Category">✏️</button>
+            <button class="action-icon-btn danger" onclick="confirmDeleteCategory(${c.id}, '${escapeJsString(c.name)}', ${productCount})" title="Delete Category">🗑️</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
 function openAddCategoryModal() {
@@ -588,7 +835,8 @@ function openAddCategoryModal() {
 }
 
 function editCategoryById(id) {
-  const c = allCategories.find(item => item.id == id);
+  storeData = getLocalData();
+  const c = (storeData.categories || []).find(item => String(item.id) === String(id));
   if (!c) return;
 
   document.getElementById('categoryModalTitle').textContent = 'Edit Category';
@@ -602,37 +850,31 @@ function editCategoryById(id) {
   openModal('categoryModal');
 }
 
-async function saveCategoryForm(e) {
+function saveCategoryForm(e) {
   e.preventDefault();
+  storeData = getLocalData();
   const id = document.getElementById('modalCatId').value;
-  const payload = {
+
+  const catData = {
+    id: id ? Number(id) : Date.now(),
     name: document.getElementById('modalCatName').value.trim(),
     tamil_name: document.getElementById('modalCatTamil').value.trim(),
-    icon: document.getElementById('modalCatIcon').value.trim(),
+    icon: document.getElementById('modalCatIcon').value.trim() || '📦',
     display_order: parseInt(document.getElementById('modalCatOrder').value) || 0,
-    is_active: document.getElementById('modalCatActive').checked
+    is_active: document.getElementById('modalCatActive').checked ? 1 : 0
   };
 
-  const isEdit = !!id;
-  const endpoint = isEdit ? `/admin/categories/${id}` : '/admin/categories';
-  const method = isEdit ? 'PUT' : 'POST';
-
-  try {
-    const res = await apiFetch(endpoint, {
-      method,
-      body: JSON.stringify(payload)
-    });
-
-    if (res.success) {
-      showToast(isEdit ? 'Category updated!' : 'Category created!', 'success');
-      closeModal('categoryModal');
-      loadCategories();
-    } else {
-      showToast(res.error || 'Failed to save category.', 'error');
-    }
-  } catch (err) {
-    showToast('Server error while saving category.', 'error');
+  if (id) {
+    const idx = storeData.categories.findIndex(c => String(c.id) === String(id));
+    if (idx !== -1) storeData.categories[idx] = catData;
+  } else {
+    storeData.categories.push(catData);
   }
+
+  saveLocalData(storeData);
+  showToast(id ? 'Category updated!' : 'Category created!', 'success');
+  closeModal('categoryModal');
+  loadCategories();
 }
 
 function confirmDeleteCategory(id, name, productCount) {
@@ -644,47 +886,32 @@ function confirmDeleteCategory(id, name, productCount) {
   showConfirm(
     'Delete Category',
     `Are you sure you want to delete category <strong>${escapeHtml(name)}</strong>?`,
-    async () => {
-      try {
-        const res = await apiFetch(`/admin/categories/${id}`, { method: 'DELETE' });
-        if (res.success) {
-          showToast('Category deleted.', 'info');
-          loadCategories();
-        } else {
-          showToast(res.error || 'Failed to delete category.', 'error');
-        }
-      } catch (err) {
-        showToast('Error deleting category.', 'error');
-      }
+    () => {
+      storeData = getLocalData();
+      storeData.categories = (storeData.categories || []).filter(c => String(c.id) !== String(id));
+      saveLocalData(storeData);
+      showToast('Category deleted.', 'info');
+      loadCategories();
     }
   );
 }
 
 // ==============================================================================
-// 7. OFFERS & PROMOTIONS (Section 7)
+// 7. OFFERS & PROMOTIONS
 // ==============================================================================
-async function loadOffers() {
-  try {
-    const res = await apiFetch('/admin/offers');
-    if (!res.success) return;
+function loadOffers() {
+  storeData = getLocalData();
+  allOffers = storeData.offers || [];
 
-    allOffers = res.offers || [];
-    renderOffersTable(allOffers);
-  } catch (err) {
-    showToast('Failed to load offers.', 'error');
-  }
-}
-
-function renderOffersTable(offers) {
   const tbody = document.getElementById('offersTableBody');
   if (!tbody) return;
 
-  if (offers.length === 0) {
+  if (allOffers.length === 0) {
     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 24px; color:#94a3b8;">No offers created yet.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = offers.map(o => `
+  tbody.innerHTML = allOffers.map(o => `
     <tr>
       <td><strong>${escapeHtml(o.title)}</strong></td>
       <td><span style="font-weight:700; color:#b45309; background:#fef3c7; padding:2px 8px; border-radius:4px;">${escapeHtml(o.discount_tag || '')}</span></td>
@@ -707,7 +934,7 @@ function openAddOfferModal() {
   document.getElementById('modalOfferTitle').value = '';
   document.getElementById('modalOfferDesc').value = '';
   document.getElementById('modalOfferTag').value = 'FLAT 10% OFF';
-  document.getElementById('modalOfferCode').value = '';
+  document.getElementById('modalOfferCode').value = 'TIRUPPUR10';
   document.getElementById('modalOfferBanner').value = '';
   document.getElementById('modalOfferStart').value = '';
   document.getElementById('modalOfferEnd').value = '';
@@ -717,7 +944,8 @@ function openAddOfferModal() {
 }
 
 function editOfferById(id) {
-  const o = allOffers.find(item => item.id == id);
+  storeData = getLocalData();
+  const o = (storeData.offers || []).find(item => String(item.id) === String(id));
   if (!o) return;
 
   document.getElementById('offerModalTitle').textContent = 'Edit Offer';
@@ -734,10 +962,13 @@ function editOfferById(id) {
   openModal('offerModal');
 }
 
-async function saveOfferForm(e) {
+function saveOfferForm(e) {
   e.preventDefault();
+  storeData = getLocalData();
   const id = document.getElementById('modalOfferId').value;
-  const payload = {
+
+  const offerData = {
+    id: id ? Number(id) : Date.now(),
     title: document.getElementById('modalOfferTitle').value.trim(),
     description: document.getElementById('modalOfferDesc').value.trim(),
     discount_tag: document.getElementById('modalOfferTag').value.trim(),
@@ -745,79 +976,64 @@ async function saveOfferForm(e) {
     banner_url: document.getElementById('modalOfferBanner').value.trim(),
     start_date: document.getElementById('modalOfferStart').value,
     end_date: document.getElementById('modalOfferEnd').value,
-    is_active: document.getElementById('modalOfferActive').checked
+    is_active: document.getElementById('modalOfferActive').checked ? 1 : 0
   };
 
-  const isEdit = !!id;
-  const endpoint = isEdit ? `/admin/offers/${id}` : '/admin/offers';
-  const method = isEdit ? 'PUT' : 'POST';
-
-  try {
-    const res = await apiFetch(endpoint, {
-      method,
-      body: JSON.stringify(payload)
-    });
-
-    if (res.success) {
-      showToast(isEdit ? 'Offer updated!' : 'Offer published!', 'success');
-      closeModal('offerModal');
-      loadOffers();
-    } else {
-      showToast(res.error || 'Failed to save offer.', 'error');
-    }
-  } catch (err) {
-    showToast('Server error while saving offer.', 'error');
+  if (id) {
+    const idx = storeData.offers.findIndex(o => String(o.id) === String(id));
+    if (idx !== -1) storeData.offers[idx] = offerData;
+  } else {
+    storeData.offers.unshift(offerData);
   }
+
+  saveLocalData(storeData);
+  showToast(id ? 'Offer updated!' : 'Offer published live!', 'success');
+  closeModal('offerModal');
+  loadOffers();
 }
 
 function confirmDeleteOffer(id, title) {
   showConfirm(
     'Delete Offer',
     `Delete offer <strong>${escapeHtml(title)}</strong>?`,
-    async () => {
-      try {
-        const res = await apiFetch(`/admin/offers/${id}`, { method: 'DELETE' });
-        if (res.success) {
-          showToast('Offer deleted.', 'info');
-          loadOffers();
-        }
-      } catch (err) {
-        showToast('Failed to delete offer.', 'error');
-      }
+    () => {
+      storeData = getLocalData();
+      storeData.offers = (storeData.offers || []).filter(o => String(o.id) !== String(id));
+      saveLocalData(storeData);
+      showToast('Offer deleted.', 'info');
+      loadOffers();
     }
   );
 }
 
 // ==============================================================================
-// 8. SHOP INFORMATION SETTINGS (Section 8)
+// 8. SHOP INFORMATION SETTINGS
 // ==============================================================================
-async function loadShopSettings() {
-  try {
-    const res = await apiFetch('/admin/shop-settings');
-    if (!res.success) return;
+function loadShopSettings() {
+  storeData = getLocalData();
+  const shop = storeData.shop || DEFAULT_DATA.shop;
 
-    shopSettings = res.settings || {};
-    document.getElementById('shopNameInput').value = shopSettings.shop_name || '';
-    document.getElementById('shopTaglineInput').value = shopSettings.tagline || '';
-    document.getElementById('shopPhoneDisplayInput').value = shopSettings.phone_display || '';
-    document.getElementById('shopWhatsappInput').value = shopSettings.whatsapp_number || '';
-    document.getElementById('shopAddress1Input').value = shopSettings.address_line1 || '';
-    document.getElementById('shopAddress2Input').value = shopSettings.address_line2 || '';
-    document.getElementById('shopCityInput').value = shopSettings.city || 'Tiruppur';
-    document.getElementById('shopPincodeInput').value = shopSettings.pincode || '641601';
-    document.getElementById('shopTimingsInput').value = shopSettings.timings || '';
-    document.getElementById('shopGmapsInput').value = shopSettings.gmaps_url || '';
-    document.getElementById('shopDeliveryRadiusInput').value = shopSettings.delivery_radius || '';
-    document.getElementById('shopMinOrderInput').value = shopSettings.min_order_amount || '200';
-    document.getElementById('shopDescriptionInput').value = shopSettings.shop_description || '';
-  } catch (err) {
-    showToast('Failed to load shop settings.', 'error');
-  }
+  document.getElementById('shopNameInput').value = shop.shop_name || '';
+  document.getElementById('shopTaglineInput').value = shop.tagline || '';
+  document.getElementById('shopPhoneDisplayInput').value = shop.phone_display || '';
+  document.getElementById('shopWhatsappInput').value = shop.whatsapp_number || '';
+  document.getElementById('shopAddress1Input').value = shop.address_line1 || '';
+  document.getElementById('shopAddress2Input').value = shop.address_line2 || '';
+  document.getElementById('shopCityInput').value = shop.city || 'Tiruppur';
+  document.getElementById('shopPincodeInput').value = shop.pincode || '641601';
+  document.getElementById('shopTimingsInput').value = shop.timings || '';
+  document.getElementById('shopGmapsInput').value = shop.gmaps_url || '';
+  document.getElementById('shopDeliveryRadiusInput').value = shop.delivery_radius || '';
+  document.getElementById('shopMinOrderInput').value = shop.min_order_amount || '200';
+  document.getElementById('shopDescriptionInput').value = shop.shop_description || '';
 }
 
-async function handleSaveShopSettings(e) {
+function handleSaveShopSettings(e) {
   e.preventDefault();
-  const updates = {
+  storeData = getLocalData();
+
+  storeData.shop = {
+    ...storeData.shop,
     shop_name: document.getElementById('shopNameInput').value.trim(),
     tagline: document.getElementById('shopTaglineInput').value.trim(),
     phone_display: document.getElementById('shopPhoneDisplayInput').value.trim(),
@@ -833,42 +1049,33 @@ async function handleSaveShopSettings(e) {
     shop_description: document.getElementById('shopDescriptionInput').value.trim()
   };
 
-  try {
-    const res = await apiFetch('/admin/shop-settings', {
-      method: 'PUT',
-      body: JSON.stringify(updates)
-    });
+  saveLocalData(storeData);
+  showToast('Shop details saved and updated on public website!', 'success');
 
-    if (res.success) {
-      showToast('Shop details saved & updated on public website!', 'success');
-    } else {
-      showToast(res.error || 'Failed to update shop details.', 'error');
-    }
-  } catch (err) {
-    showToast('Server error while updating shop settings.', 'error');
+  if (isServerAvailable) {
+    fetch(`${API_BASE}/admin/shop-settings`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(storeData.shop)
+    }).catch(() => {});
   }
 }
 
 // ==============================================================================
-// 9. WEBSITE HOMEPAGE MANAGEMENT (Section 9)
+// 9. WEBSITE HOMEPAGE MANAGEMENT
 // ==============================================================================
-async function loadHomepageSettings() {
-  try {
-    const res = await apiFetch('/admin/homepage');
-    if (!res.success) return;
+function loadHomepageSettings() {
+  storeData = getLocalData();
+  const hp = storeData.homepage || DEFAULT_DATA.homepage;
 
-    homepageSettings = res.settings || {};
-    document.getElementById('heroHeadlineInput').value = homepageSettings.hero_headline || '';
-    document.getElementById('heroSubtitleInput').value = homepageSettings.hero_subtitle || '';
-    document.getElementById('heroImageInput').value = homepageSettings.hero_image_url || '';
-    document.getElementById('trustIndicatorInput').value = homepageSettings.trust_indicator || '';
-    document.getElementById('announcementTextInput').value = homepageSettings.announcement_text || '';
-    document.getElementById('announcementActiveInput').checked = homepageSettings.announcement_active !== '0';
+  document.getElementById('heroHeadlineInput').value = hp.hero_headline || '';
+  document.getElementById('heroSubtitleInput').value = hp.hero_subtitle || '';
+  document.getElementById('heroImageInput').value = hp.hero_image_url || '';
+  document.getElementById('trustIndicatorInput').value = hp.trust_indicator || '';
+  document.getElementById('announcementTextInput').value = hp.announcement_text || '';
+  document.getElementById('announcementActiveInput').checked = hp.announcement_active !== '0';
 
-    updateLiveHomepagePreview();
-  } catch (err) {
-    showToast('Failed to load homepage settings.', 'error');
-  }
+  updateLiveHomepagePreview();
 }
 
 function updateLiveHomepagePreview() {
@@ -888,9 +1095,12 @@ function updateLiveHomepagePreview() {
   if (previewTrust) previewTrust.textContent = trust;
 }
 
-async function handleSaveHomepageSettings(e) {
+function handleSaveHomepageSettings(e) {
   e.preventDefault();
-  const updates = {
+  storeData = getLocalData();
+
+  storeData.homepage = {
+    ...storeData.homepage,
     hero_headline: document.getElementById('heroHeadlineInput').value.trim(),
     hero_subtitle: document.getElementById('heroSubtitleInput').value.trim(),
     hero_image_url: document.getElementById('heroImageInput').value.trim(),
@@ -899,47 +1109,34 @@ async function handleSaveHomepageSettings(e) {
     announcement_active: document.getElementById('announcementActiveInput').checked ? '1' : '0'
   };
 
-  try {
-    const res = await apiFetch('/admin/homepage', {
+  saveLocalData(storeData);
+  showToast('Homepage content saved and live on website!', 'success');
+
+  if (isServerAvailable) {
+    fetch(`${API_BASE}/admin/homepage`, {
       method: 'PUT',
-      body: JSON.stringify(updates)
-    });
-
-    if (res.success) {
-      showToast('Homepage content saved and live on website!', 'success');
-    } else {
-      showToast(res.error || 'Failed to save homepage settings.', 'error');
-    }
-  } catch (err) {
-    showToast('Server error while saving homepage settings.', 'error');
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(storeData.homepage)
+    }).catch(() => {});
   }
 }
 
 // ==============================================================================
-// 10. ORDERS & WHATSAPP MANAGEMENT (Section 10)
+// 10. ORDERS & WHATSAPP MANAGEMENT
 // ==============================================================================
-async function loadOrders() {
-  try {
-    const res = await apiFetch('/admin/orders');
-    if (!res.success) return;
+function loadOrders() {
+  storeData = getLocalData();
+  allOrders = storeData.orders || [];
 
-    allOrders = res.orders || [];
-    renderOrdersTable(allOrders);
-  } catch (err) {
-    showToast('Failed to load orders.', 'error');
-  }
-}
-
-function renderOrdersTable(orders) {
   const tbody = document.getElementById('ordersTableBody');
   if (!tbody) return;
 
-  if (orders.length === 0) {
+  if (allOrders.length === 0) {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 24px; color:#94a3b8;">No customer orders placed yet.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = orders.map(o => {
+  tbody.innerHTML = allOrders.map(o => {
     const itemsSummary = Array.isArray(o.items)
       ? o.items.map(it => `${it.qty || 1}x ${it.name}`).join(', ')
       : 'Items list';
@@ -979,79 +1176,59 @@ function renderOrdersTable(orders) {
   }).join('');
 }
 
-async function updateOrderStatus(orderId, newStatus) {
-  try {
-    const res = await apiFetch(`/admin/orders/${orderId}/status`, {
-      method: 'PUT',
-      body: JSON.stringify({ status: newStatus })
-    });
-    if (res.success) {
-      showToast(res.message || 'Order status updated!', 'success');
-    }
-  } catch (err) {
-    showToast('Failed to update order status.', 'error');
+function updateOrderStatus(orderId, newStatus) {
+  storeData = getLocalData();
+  const ord = (storeData.orders || []).find(o => String(o.id) === String(orderId));
+  if (ord) {
+    ord.status = newStatus;
+    saveLocalData(storeData);
+    showToast(`Order #${orderId} marked as ${newStatus}.`, 'success');
   }
 }
 
 function openCustomerWhatsApp(rawPhone, name, orderId) {
-  // Clean phone number
   let phone = rawPhone.replace(/\D/g, '');
   if (!phone.startsWith('91') && phone.length === 10) {
     phone = '91' + phone;
   }
-
   const msg = encodeURIComponent(`Hello ${name}, this is Sri Murugan Daily Fresh regarding your Order #${orderId}. We are packing your items for delivery!`);
   window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
 }
 
 // ==============================================================================
-// 11. IMAGE UPLOAD HELPER (Section 5)
+// 11. IMAGE UPLOAD HELPER (Client Base64 / LocalStorage + Server)
 // ==============================================================================
-async function handleFileUpload(fileInput, targetUrlInputId, previewImgId) {
+function handleFileUpload(fileInput, targetUrlInputId, previewImgId) {
   const file = fileInput.files[0];
   if (!file) return;
 
-  // Validate format
   const validFormats = ['image/jpeg', 'image/png', 'image/webp'];
   if (!validFormats.includes(file.type)) {
     showToast('Only JPG, PNG and WebP images are allowed.', 'error');
     return;
   }
 
-  // Validate size (5MB)
   if (file.size > 5 * 1024 * 1024) {
     showToast('Image size exceeds 5MB limit.', 'error');
     return;
   }
 
-  const formData = new FormData();
-  formData.append('image', file);
+  showToast('Processing image...', 'info');
 
-  showToast('Uploading image...', 'info');
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    const urlInput = document.getElementById(targetUrlInputId);
+    if (urlInput) urlInput.value = dataUrl;
 
-  try {
-    const res = await apiFetch('/admin/upload', {
-      method: 'POST',
-      body: formData
-    });
-
-    if (res.success && res.url) {
-      const urlInput = document.getElementById(targetUrlInputId);
-      if (urlInput) urlInput.value = res.url;
-
-      const preview = document.getElementById(previewImgId);
-      if (preview) {
-        preview.src = res.url;
-        preview.style.display = 'block';
-      }
-
-      showToast('Image uploaded successfully!', 'success');
-    } else {
-      showToast(res.error || 'Upload failed.', 'error');
+    const preview = document.getElementById(previewImgId);
+    if (preview) {
+      preview.src = dataUrl;
+      preview.style.display = 'block';
     }
-  } catch (err) {
-    showToast('Error uploading image to server.', 'error');
-  }
+    showToast('Image ready and previewed!', 'success');
+  };
+  reader.readAsDataURL(file);
 }
 
 // ==============================================================================
@@ -1082,7 +1259,6 @@ document.getElementById('confirmModalConfirmBtn')?.addEventListener('click', () 
   closeModal('confirmModal');
 });
 
-// Toast notification system
 function showToast(message, type = 'success') {
   let container = document.getElementById('toastContainer');
   if (!container) {
@@ -1107,7 +1283,6 @@ function showToast(message, type = 'success') {
   }, 3500);
 }
 
-// String escaping utilities
 function escapeHtml(str) {
   if (!str) return '';
   return String(str)
