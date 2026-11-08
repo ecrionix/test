@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Diwali, Kishore! 🪔✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Great+Vibes&family=Outfit:wght@300;400;600&family=Rozha+One&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --gold-primary: #ffd700;
+      --gold-light: #fff2a3;
+      --gold-dark: #c59b27;
+      --diya-clay: #b84a28;
+      --diya-clay-dark: #7a260c;
+      --flame-yellow: #fff37a;
+      --flame-orange: #ff7b00;
+      --bg-dark: #0a0414;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 50% 25%, #240a34 0%, #120320 45%, #07010e 100%);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* Fireworks Canvas overlay */
+    #canvas-fireworks {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Background rotating Mandala */
+    .mandala-bg {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(850px, 120vw);
+      height: min(850px, 120vw);
+      opacity: 0.08;
+      z-index: 0;
+      pointer-events: none;
+      animation: rotateSlow 120s linear infinite;
+    }
+
+    @keyframes rotateSlow {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Floating Lanterns / Golden Bokeh */
+    .lantern {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(1px);
+      pointer-events: none;
+      z-index: 0;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(105vh) scale(0.6);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.8;
+      }
+      80% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.1);
+        opacity: 0;
+      }
+    }
+
+    /* Main Card Container */
+    .card-container {
+      position: relative;
+      z-index: 2;
+      width: 90%;
+      max-width: 680px;
+      margin: 40px auto;
+      padding: 50px 35px 45px;
+      text-align: center;
+      background: rgba(28, 9, 44, 0.65);
+      border-radius: 30px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 2px solid rgba(255, 215, 0, 0.35);
+      box-shadow:
+        0 0 50px rgba(255, 174, 0, 0.25),
+        inset 0 0 35px rgba(255, 215, 0, 0.12),
+        0 25px 60px rgba(0, 0, 0, 0.6);
+      transition: all 0.5s ease;
+      overflow: hidden;
+    }
+
+    .card-container::before {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: 24px;
+      border: 1px dashed rgba(255, 215, 0, 0.3);
+      pointer-events: none;
+    }
+
+    /* Shubh Deepavali Sanskrit/Devanagari style tag */
+    .festive-tag {
+      display: inline-block;
+      font-family: 'Rozha One', serif;
+      font-size: 1.15rem;
+      letter-spacing: 4px;
+      color: var(--gold-light);
+      text-transform: uppercase;
+      padding: 6px 22px;
+      border-radius: 50px;
+      background: linear-gradient(90deg, rgba(255,215,0,0.1), rgba(255,140,0,0.25), rgba(255,215,0,0.1));
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      margin-bottom: 18px;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+    }
+
+    /* Main Greeting */
+    h1.greeting-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(2rem, 5.5vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1.15;
+      background: linear-gradient(135deg, #fff2a3 0%, #ffd700 40%, #ff8c00 70%, #ffdf73 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 35px rgba(255, 215, 0, 0.4);
+      margin-bottom: 8px;
+    }
+
+    h2.recipient-name {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(2.8rem, 8vw, 4.2rem);
+      color: #fff9d6;
+      text-shadow:
+        0 0 15px #ffd700,
+        0 0 35px rgba(255, 140, 0, 0.8),
+        0 0 65px rgba(255, 77, 0, 0.5);
+      margin-bottom: 22px;
+      letter-spacing: 2px;
+      animation: softGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes softGlow {
+      from {
+        text-shadow:
+          0 0 15px #ffd700,
+          0 0 35px rgba(255, 140, 0, 0.7);
+      }
+      to {
+        text-shadow:
+          0 0 25px #fff2a3,
+          0 0 50px rgba(255, 174, 0, 0.95),
+          0 0 75px rgba(255, 70, 0, 0.8);
+      }
+    }
+
+    /* Decorative Divider */
+    .ornament-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 15px auto 25px;
+      color: var(--gold-primary);
+    }
+
+    .ornament-divider span.line {
+      width: 70px;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+    }
+
+    /* Heartfelt wish message */
+    .wish-paragraph {
+      font-size: clamp(1rem, 2.5vw, 1.18rem);
+      line-height: 1.8;
+      color: #f7e8ff;
+      max-width: 530px;
+      margin: 0 auto 30px;
+      font-weight: 300;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    }
+
+    .wish-paragraph strong {
+      color: var(--gold-light);
+      font-weight: 600;
+    }
+
+    /* Diya Showcase */
+    .diya-stage {
+      position: relative;
+      margin: 20px auto 15px;
+      display: inline-block;
+      cursor: pointer;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .diya-stage:hover {
+      transform: scale(1.06);
+    }
+
+    .diya-stage:active {
+      transform: scale(0.97);
+    }
+
+    .diya-svg {
+      width: 170px;
+      height: auto;
+      filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));
+    }
+
+    /* Flame Animation */
+    .flame-group {
+      transform-origin: 100px 92px;
+      animation: flicker 1.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes flicker {
+      0% {
+        transform: scale(1) rotate(-1.5deg);
+        filter: drop-shadow(0 0 14px rgba(255, 200, 0, 0.95)) drop-shadow(0 -10px 25px rgba(255, 100, 0, 0.8));
+      }
+      25% {
+        transform: scale(1.04, 0.96) rotate(1deg);
+      }
+      50% {
+        transform: scale(0.97, 1.05) rotate(-2deg);
+        filter: drop-shadow(0 0 20px rgba(255, 230, 80, 1)) drop-shadow(0 -14px 35px rgba(255, 80, 0, 0.9));
+      }
+      75% {
+        transform: scale(1.03, 0.98) rotate(1.8deg);
+      }
+      100% {
+        transform: scale(0.99, 1.03) rotate(-0.5deg);
+        filter: drop-shadow(0 0 16px rgba(255, 190, 0, 0.9)) drop-shadow(0 -8px 22px rgba(255, 110, 0, 0.75));
+      }
+    }
+
+    .diya-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      color: var(--gold-light);
+      background: rgba(255, 215, 0, 0.12);
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-top: 10px;
+      animation: pulseHint 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseHint {
+      0%, 100% { opacity: 0.75; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.03); }
+    }
+
+    /* Buttons / Interactions */
+    .action-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .festive-btn {
+      background: linear-gradient(135deg, #ffc400, #ff7700);
+      color: #21032b;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      border: none;
+      padding: 12px 26px;
+      border-radius: 30px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(255, 136, 0, 0.4), inset 0 1px 1px #fff;
+      transition: all 0.3s ease;
+    }
+
+    .festive-btn:hover {
+      background: linear-gradient(135deg, #ffe066, #ff901a);
+      box-shadow: 0 6px 28px rgba(255, 170, 0, 0.65);
+      transform: translateY(-2px);
+    }
+
+    .festive-btn:active {
+      transform: translateY(1px);
+    }
+
+    .festive-btn.secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .festive-btn.secondary:hover {
+      background: rgba(255, 215, 0, 0.18);
+      border-color: var(--gold-primary);
+      color: var(--gold-light);
+    }
+
+    /* Floating Corner Garlands */
+    .corner-garland {
+      position: absolute;
+      width: 130px;
+      pointer-events: none;
+      opacity: 0.85;
+      z-index: 1;
+    }
+    .top-left { top: 0; left: 0; }
+    .top-right { top: 0; right: 0; transform: scaleX(-1); }
+
+    /* Footer message */
+    .footer-note {
+      position: relative;
+      z-index: 2;
+      margin-bottom: 25px;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.55);
+      letter-spacing: 1px;
+    }
+
+    .footer-note span {
+      color: var(--gold-primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Fireworks Canvas -->
+  <canvas id="canvas-fireworks"></canvas>
+
+  <!-- Background Decorative Mandala -->
+  <svg class="mandala-bg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none" stroke="#ffd700" stroke-width="0.7">
+      <circle cx="100" cy="100" r="95" stroke-dasharray="2 3"/>
+      <circle cx="100" cy="100" r="85"/>
+      <circle cx="100" cy="100" r="72" stroke-dasharray="4 4"/>
+      <circle cx="100" cy="100" r="58"/>
+      <circle cx="100" cy="100" r="42"/>
+      <circle cx="100" cy="100" r="28" stroke-dasharray="3 3"/>
+      <circle cx="100" cy="100" r="14"/>
+      <!-- Flower petals / spokes -->
+      <g id="petals">
+        <path d="M100 5 C115 45 115 55 100 70 C85 55 85 45 100 5 Z"/>
+        <path d="M100 130 C115 145 115 155 100 195 C85 155 85 145 100 130 Z"/>
+        <path d="M5 100 C45 115 55 115 70 100 C55 85 45 85 5 100 Z"/>
+        <path d="M130 100 C145 115 155 115 195 100 C155 85 145 85 130 100 Z"/>
+      </g>
+      <use href="#petals" transform="rotate(30 100 100)"/>
+      <use href="#petals" transform="rotate(60 100 100)"/>
+      <use href="#petals" transform="rotate(45 100 100)"/>
+      <use href="#petals" transform="rotate(75 100 100)"/>
+      <use href="#petals" transform="rotate(15 100 100)"/>
+    </g>
+  </svg>
+
+  <!-- Festive Corner Garlands / Toran -->
+  <svg class="corner-garland top-left" viewBox="0 0 100 100">
+    <path d="M0,0 Q50,0 80,30 Q30,50 0,0" fill="url(#marigoldGrad)" opacity="0.9"/>
+    <circle cx="15" cy="20" r="7" fill="#ff7700"/>
+    <circle cx="35" cy="30" r="8" fill="#ffd700"/>
+    <circle cx="58" cy="48" r="9" fill="#ff4d00"/>
+    <circle cx="80" cy="75" r="7" fill="#ffd700"/>
+    <defs>
+      <linearGradient id="marigoldGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ff9900"/>
+        <stop offset="100%" stop-color="#ff3300"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <svg class="corner-garland top-right" viewBox="0 0 100 100">
+    <path d="M0,0 Q50,0 80,30 Q30,50 0,0" fill="url(#marigoldGrad)" opacity="0.9"/>
+    <circle cx="15" cy="20" r="7" fill="#ff7700"/>
+    <circle cx="35" cy="30" r="8" fill="#ffd700"/>
+    <circle cx="58" cy="48" r="9" fill="#ff4d00"/>
+    <circle cx="80" cy="75" r="7" fill="#ffd700"/>
+  </svg>
+
+  <!-- Main Card -->
+  <main class="card-container">
+    <div class="festive-tag">✨ Shubh Deepavali ✨</div>
+
+    <h1 class="greeting-title">Happy Diwali</h1>
+    <h2 class="recipient-name">Kishore!</h2>
+
+    <div class="ornament-divider">
+      <span class="line"></span>
+      <span>🪔</span>
+      <span style="font-size: 1.3rem;">✦</span>
+      <span>🪔</span>
+      <span class="line"></span>
+    </div>
+
+    <p class="wish-paragraph">
+      May the divine, radiant light of Diwali illuminate your path with
+      <strong>unending peace</strong>, <strong>limitless prosperity</strong>, and
+      <strong>boundless joy</strong>.<br/><br/>
+      Wishing you and your family a celebration filled with golden memories, laughter,
+      sweet moments, and stellar triumphs in the year ahead!
+    </p>
+
+    <!-- Interactive Diya Element -->
+    <div class="diya-stage" id="diyaBtn" title="Click to light up more sparklers!">
+      <svg class="diya-svg" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Clay Base Gradient -->
+          <linearGradient id="clayGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#df6338"/>
+            <stop offset="45%" stop-color="#b8421c"/>
+            <stop offset="100%" stop-color="#5a1805"/>
+          </linearGradient>
+          <!-- Rim Gold Trim -->
+          <linearGradient id="goldRim" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#ffd700"/>
+            <stop offset="50%" stop-color="#fff8cc"/>
+            <stop offset="100%" stop-color="#d49b1a"/>
+          </linearGradient>
+          <!-- Outer Flame Glow Gradient -->
+          <radialGradient id="flameOuter" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="25%" stop-color="#ffe600"/>
+            <stop offset="65%" stop-color="#ff6600"/>
+            <stop offset="100%" stop-color="#ff0000" stop-opacity="0"/>
+          </radialGradient>
+          <!-- Inner Core Flame Gradient -->
+          <linearGradient id="flameInner" x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" stop-color="#3a88ff"/>
+            <stop offset="25%" stop-color="#ffff77"/>
+            <stop offset="85%" stop-color="#ffffff"/>
+          </linearGradient>
+          <!-- Filter for flame glow -->
+          <filter id="glowFilter" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="3.5" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <!-- Base Glow under Diya -->
+        <ellipse cx="100" cy="130" rx="65" ry="12" fill="rgba(255, 140, 0, 0.45)" filter="blur(7px)"/>
+
+        <!-- Clay Bowl Body -->
+        <path
+          d="M30 92 Q100 148 170 92 Q135 130 100 130 Q65 130 30 92 Z"
+          fill="url(#clayGrad)"
+          stroke="#411002"
+          stroke-width="1.5"
+        />
+
+        <!-- Decorative Engravings on Diya Base -->
+        <path
+          d="M50 104 Q100 134 150 104"
+          fill="none"
+          stroke="url(#goldRim)"
+          stroke-width="2.2"
+          stroke-linecap="round"
+        />
+        <circle cx="75" cy="113" r="2.5" fill="#ffd700"/>
+        <circle cx="100" cy="119" r="3.2" fill="#ffd700"/>
+        <circle cx="125" cy="113" r="2.5" fill="#ffd700"/>
+
+        <!-- Top Rim Lip -->
+        <ellipse cx="100" cy="92" rx="70" ry="12" fill="#913314" stroke="url(#goldRim)" stroke-width="2.5"/>
+        <!-- Oil interior -->
+        <ellipse cx="100" cy="93" rx="58" ry="8" fill="#521703"/>
+
+        <!-- Wick Tip -->
+        <path d="M98 94 Q99 87 101 84" stroke="#2b0a00" stroke-width="3" stroke-linecap="round"/>
+
+        <!-- Animated Flame -->
+        <g class="flame-group" filter="url(#glowFilter)">
+          <!-- Ambient Halo -->
+          <ellipse cx="100" cy="65" rx="26" ry="34" fill="url(#flameOuter)" opacity="0.65"/>
+          <!-- Outer Teardrop Flame -->
+          <path
+            d="M100 32 C115 55 118 76 100 87 C82 76 85 55 100 32 Z"
+            fill="url(#flameOuter)"
+          />
+          <!-- Inner Bright Core -->
+          <path
+            d="M100 48 C108 63 109 76 100 85 C91 76 92 63 100 48 Z"
+            fill="url(#flameInner)"
+          />
+        </g>
+      </svg>
+      <br/>
+      <div class="diya-hint">🪔 Touch the Diya for Festive Magic ✨</div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-group">
+      <button class="festive-btn" id="btnBurst">
+        <span>🎆 Burst Crackers</span>
+      </button>
+      <button class="festive-btn secondary" id="btnChime">
+        <span id="chimeIcon">🔔</span> Play Festive Chimes
+      </button>
+    </div>
+  </main>
+
+  <footer class="footer-note">
+    Crafted with golden warmth &amp; sparkling joy for <span>Kishore</span> 🪔
+  </footer>
+
+  <script>
+    /* ==========================================================
+       1. FIREWORKS & SPARKS CANVAS ENGINE
+       ========================================================== */
+    const canvas = document.getElementById('canvas-fireworks');
+    const ctx = canvas.getContext('2d');
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const particles = [];
+    const colorPalettes = [
+      ['#FFD700', '#FFA500', '#FF4500', '#FFF2A3', '#FFFFFF'], // Gold/Orange
+      ['#FF1493', '#FF69B4', '#FFD700', '#00FFFF', '#FFFFFF'], // Neon Fiesta
+      ['#00FFA3', '#00E1FF', '#FFDF00', '#FF3B30', '#FFFFFF'], // Electric Jewel
+      ['#FF5252', '#FFD740', '#FF4081', '#E040FB', '#FFFFFF']  // Royal Festive
+    ];
+
+    class Particle {
+      constructor(x, y, color, isSparkler = false) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.isSparkler = isSparkler;
+
+        const angle = Math.random() * Math.PI * 2;
+        const speed = isSparkler
+          ? Math.random() * 6 + 1.5
+          : Math.random() * 8 + 2;
+
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed - (isSparkler ? 0.5 : 1.5);
+
+        this.alpha = 1;
+        this.decay = Math.random() * 0.018 + 0.012;
+        this.gravity = 0.12;
+        this.friction = 0.96;
+        this.size = Math.random() * 3 + 1.5;
+      }
+
+      update() {
+        this.vx *= this.friction;
+        this.vy *= this.friction;
+        this.vy += this.gravity;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.alpha -= this.decay;
+      }
+
+      draw(context) {
+        context.save();
+        context.globalAlpha = Math.max(this.alpha, 0);
+        context.fillStyle = this.color;
+        context.shadowColor = this.color;
+        context.shadowBlur = 8;
+        context.beginPath();
+        context.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        context.fill();
+        context.restore();
+      }
+    }
+
+    function createFirework(x, y) {
+      const palette = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
+      const count = 75 + Math.floor(Math.random() * 45);
+      for (let i = 0; i < count; i++) {
+        const color = palette[Math.floor(Math.random() * palette.length)];
+        particles.push(new Particle(x, y, color));
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, width, height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.update();
+        p.draw(ctx);
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // Launch random ambient fireworks
+    let autoFireworkInterval = setInterval(() => {
+      const rx = Math.random() * (width * 0.8) + width * 0.1;
+      const ry = Math.random() * (height * 0.5) + height * 0.1;
+      createFirework(rx, ry);
+    }, 1800);
+
+    /* ==========================================================
+       2. FLOATING GOLDEN BOKEH LANTERNS
+       ========================================================== */
+    function createLanterns() {
+      const lanternCount = 20;
+      for (let i = 0; i < lanternCount; i++) {
+        const l = document.createElement('div');
+        l.className = 'lantern';
+        const size = Math.random() * 8 + 4;
+        l.style.width = size + 'px';
+        l.style.height = size + 'px';
+        l.style.left = Math.random() * 100 + 'vw';
+        const colors = [
+          'rgba(255, 215, 0, 0.8)',
+          'rgba(255, 140, 0, 0.8)',
+          'rgba(255, 235, 130, 0.9)'
+        ];
+        const c = colors[Math.floor(Math.random() * colors.length)];
+        l.style.background = c;
+        l.style.boxShadow = `0 0 ${size * 2}px ${c}`;
+        l.style.animationDuration = (Math.random() * 9 + 8) + 's';
+        l.style.animationDelay = (Math.random() * 8) + 's';
+        document.body.appendChild(l);
+      }
+    }
+    createLanterns();
+
+    /* ==========================================================
+       3. WEB AUDIO API SYNTHESIZER (No external sound files needed!)
+       ========================================================== */
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    // Melodic Indian Raag Bhupali / Mohanam Pentatonic Notes (C, D, E, G, A)
+    const festiveFrequencies = [
+      261.63, 293.66, 329.63, 392.00, 440.00, // C4, D4, E4, G4, A4
+      523.25, 587.33, 659.25, 783.99, 880.00, // C5, D5, E5, G5, A5
+      1046.50                                  // C6
+    ];
+
+    function playTone(freq, timeOffset = 0, duration = 1.2) {
+      try {
+        const actx = getAudioContext();
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, actx.currentTime + timeOffset);
+
+        gain.gain.setValueAtTime(0.001, actx.currentTime + timeOffset);
+        gain.gain.exponentialRampToValueAtTime(0.25, actx.currentTime + timeOffset + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + timeOffset + duration);
+
+        osc.connect(gain);
+        gain.connect(actx.destination);
+
+        osc.start(actx.currentTime + timeOffset);
+        osc.stop(actx.currentTime + timeOffset + duration);
+      } catch (e) {
+        console.warn('Audio note play error:', e);
+      }
+    }
+
+    function playFireworkSound() {
+      try {
+        const actx = getAudioContext();
+        // White noise burst for firework crackle
+        const bufferSize = actx.sampleRate * 0.35;
+        const buffer = actx.createBuffer(1, bufferSize, actx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+
+        const noise = actx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = actx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(800, actx.currentTime);
+        filter.frequency.exponentialRampToValueAtTime(100, actx.currentTime + 0.3);
+
+        const gain = actx.createGain();
+        gain.gain.setValueAtTime(0.3, actx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.35);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(actx.destination);
+
+        noise.start();
+      } catch (err) {
+        // Ignore audio policy issues
+      }
+    }
+
+    function playFestiveMelody() {
+      const notes = [
+        festiveFrequencies[3], // G4
+        festiveFrequencies[4], // A4
+        festiveFrequencies[5], // C5
+        festiveFrequencies[6], // D5
+        festiveFrequencies[7], // E5
+        festiveFrequencies[9], // A5
+        festiveFrequencies[10] // C6
+      ];
+      notes.forEach((freq, idx) => {
+        playTone(freq, idx * 0.16, 1.4);
+      });
+    }
+
+    /* ==========================================================
+       4. INTERACTION LISTENERS
+       ========================================================== */
+    const diyaBtn = document.getElementById('diyaBtn');
+    const btnBurst = document.getElementById('btnBurst');
+    const btnChime = document.getElementById('btnChime');
+
+    // Click on Diya: Grand Burst & Melodic Chimes
+    diyaBtn.addEventListener('click', (e) => {
+      const rect = diyaBtn.getBoundingClientRect();
+      const originX = rect.left + rect.width / 2;
+      const originY = rect.top + rect.height * 0.3;
+
+      for (let i = 0; i < 4; i++) {
+        setTimeout(() => {
+          const offsetX = (Math.random() - 0.5) * 120;
+          const offsetY = (Math.random() - 0.5) * 80;
+          createFirework(originX + offsetX, originY + offsetY);
+          playFireworkSound();
+        }, i * 140);
+      }
+      playFestiveMelody();
+    });
+
+    // Burst Button
+    btnBurst.addEventListener('click', () => {
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          const rx = Math.random() * (width * 0.7) + width * 0.15;
+          const ry = Math.random() * (height * 0.45) + height * 0.1;
+          createFirework(rx, ry);
+          playFireworkSound();
+        }, i * 160);
+      }
+    });
+
+    // Chime Button
+    btnChime.addEventListener('click', () => {
+      playFestiveMelody();
+      const chimeIcon = document.getElementById('chimeIcon');
+      chimeIcon.textContent = '✨';
+      setTimeout(() => {
+        chimeIcon.textContent = '🔔';
+      }, 1500);
+    });
+
+    // Clicking anywhere on screen creates sparkling firework
+    window.addEventListener('pointerdown', (e) => {
+      // Don't trigger if clicked on buttons
+      if (e.target.closest('button') || e.target.closest('#diyaBtn')) return;
+      createFirework(e.clientX, e.clientY);
+      playFireworkSound();
+      const randomFreq = festiveFrequencies[Math.floor(Math.random() * festiveFrequencies.length)];
+      playTone(randomFreq, 0, 0.9);
+    });
+  </script>
+</body>
+</html>
